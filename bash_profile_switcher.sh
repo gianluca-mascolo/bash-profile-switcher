@@ -20,9 +20,6 @@
 # Current selected profile is stored in environment variable BASH_CURRENT_PROFILE
 # and in file ~/.bash_profiles/current_profile
 
-#complete -W "${LIST_PROFILES//.load/}" t.sh
-#PPPP=$(<current_profile)
-
 export SWITCH_PROFILE_DIRECTORY=".bash_profiles"
 [ -d "$HOME/$SWITCH_PROFILE_DIRECTORY" ] || mkdir "$HOME/$SWITCH_PROFILE_DIRECTORY"
 
