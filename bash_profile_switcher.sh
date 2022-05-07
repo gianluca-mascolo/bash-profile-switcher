@@ -23,18 +23,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+### GENERAL CONFIGURATION ###
 
+# Setup default directory
 export SWITCH_PROFILE_DIRECTORY=".bash_profiles"
 [ -d "$HOME/$SWITCH_PROFILE_DIRECTORY" ] || mkdir "$HOME/$SWITCH_PROFILE_DIRECTORY"
 
+# Setup aliases to manage profiles
 alias load_bash_profile='eval [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.load" ] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.load"'
 alias unload_bash_profile='eval [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.unload" ] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.unload"'
 alias save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_DIRECTORY/saved_profile"'
 alias reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_DIRECTORY/saved_profile"'
 
-SWITCH_PROFILE_LIST="$(cd "$HOME/$SWITCH_PROFILE_DIRECTORY"; echo *.load)"
+# Create list of profiles from .load files
+
+# Note: If there are no matching files, `echo *.load` output literally "*.load"
+SWITCH_PROFILE_LIST="$(cd "$HOME/$SWITCH_PROFILE_DIRECTORY"; echo *.load)" 
 SWITCH_PROFILE_LIST="${SWITCH_PROFILE_LIST//.load/}"
-[ "$SWITCH_PROFILE_LIST" = '*' ] && SWITCH_PROFILE_LIST=""
+[ "$SWITCH_PROFILE_LIST" = '*' ] && SWITCH_PROFILE_LIST="" 
 export SWITCH_PROFILE_LIST
 
 _switch_profile_help () {
