@@ -31,3 +31,4 @@ jobs:
           sudo apt-get -y install expect
           hash expect
           docker
+          docker-compose
