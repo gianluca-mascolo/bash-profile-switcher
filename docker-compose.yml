@@ -1,0 +1,33 @@
+---
+version: '3.7'
+services:
+  shell:
+    hostname: shell
+    container_name: shell
+    image: bash:5
+    working_dir: /root
+    volumes:
+      - type: bind
+        source: $PWD/bash_profile_switcher.sh
+        target: /root/bash_profile_switcher.sh
+        read_only: true
+      - type: bind
+        source: $PWD/tests/bashrc
+        target: /root/.bashrc
+        read_only: true
+      - type: bind
+        source: $PWD/tests/test1.load
+        target: /root/.bash_profiles/test1.load
+        read_only: true
+      - type: bind
+        source: $PWD/tests/test1.unload
+        target: /root/.bash_profiles/test1.unload
+        read_only: true
+      - type: bind
+        source: $PWD/tests/test2.load
+        target: /root/.bash_profiles/test2.load
+        read_only: true
+      - type: bind
+        source: $PWD/tests/test2.unload
+        target: /root/.bash_profiles/test2.unload
+        read_only: true
