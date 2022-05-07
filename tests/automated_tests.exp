@@ -17,7 +17,7 @@ expect "#"
 send "switch_profile -l\n"
 expect {
     timeout abort
-    "please_fail"
+    "test1"
 }
 
 # Test autocompletion

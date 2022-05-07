@@ -1,24 +1,28 @@
 # Bash profile switcher
 
+# bash-profile-switcher.sh
+#
+# Manage multiple environments using profile files
+# and loading dynamically with bash shell.
+#
 # Append or source this snippet at the end of your ~/.bashrc
+# Use switch_profile function to load custom profiles
 
-# Create one or more load file under ~/.bash_profiles with your desired bash customizations
-# for example:
-# ~/.bash_profiles/dev.load
-# ~/.bash_profiles/mymode.load
-#
-# Optionally create unload files under ~/.bash_profiles/
-#
-# Example: dev.load
-# export PS1="Funky Prompt:: \w ]\\$ "
-# Example: dev.unload
-# unset PS1
+# Copyright (C) 2022 Gianluca Mascolo
 
-# select a profile with
-# switch_profile <profile name>
-#
-# Current selected profile is stored in environment variable BASH_CURRENT_PROFILE
-# and in file ~/.bash_profiles/current_profile
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 
 export SWITCH_PROFILE_DIRECTORY=".bash_profiles"
 [ -d "$HOME/$SWITCH_PROFILE_DIRECTORY" ] || mkdir "$HOME/$SWITCH_PROFILE_DIRECTORY"
@@ -97,7 +101,7 @@ switch_profile () {
   shift $(($OPTIND - 1))
 
   SELECTED_PROFILE="$1"
-  [ $DELETE_PROFILE -eq 1 ] && SELECTED_PROFILE=$BASH_CURRENT_PROFILE
+  [ $DELETE_PROFILE -eq 1 ] && SELECTED_PROFILE="$BASH_CURRENT_PROFILE"
   if ( [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.load" ] ); then {
      [ $KEEP_ENV -eq 0 ] && unload_bash_profile
      if ( [ $DELETE_PROFILE -eq 0 ] ); then {
