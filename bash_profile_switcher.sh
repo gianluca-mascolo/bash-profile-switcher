@@ -37,7 +37,7 @@ alias reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITC
 
 # Create list of profiles from .load files
 
-# Note: If there are no matching files, `echo *.load` output literally "*.load"
+# Note: If there are no matching files, echo *.load output literally "*.load"
 SWITCH_PROFILE_LIST="$(cd "$HOME/$SWITCH_PROFILE_DIRECTORY"; echo *.load)" 
 SWITCH_PROFILE_LIST="${SWITCH_PROFILE_LIST//.load/}"
 [ "$SWITCH_PROFILE_LIST" = '*' ] && SWITCH_PROFILE_LIST="" 
