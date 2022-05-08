@@ -7,19 +7,21 @@
 #
 # Append or source this snippet at the end of your ~/.bashrc
 # Use switch_profile function to load custom profiles
-
+#
+# Source repository: https://github.com/gianluca-mascolo/bash-profile-switcher
+#
 # Copyright (C) 2022 Gianluca Mascolo
-
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
@@ -43,6 +45,7 @@ SWITCH_PROFILE_LIST="${SWITCH_PROFILE_LIST//.load/}"
 [ "$SWITCH_PROFILE_LIST" = '*' ] && SWITCH_PROFILE_LIST="" 
 export SWITCH_PROFILE_LIST
 
+### FUNCTION DECLARATION ###
 _switch_profile_help () {
 cat << EOF
 switch_profile [options] profile
@@ -89,7 +92,7 @@ switch_profile () {
       l)
         echo "Available profiles:"
         echo -e "${SWITCH_PROFILE_LIST// /\\n}"
-	return 0
+        return 0
       ;;
       h)
         _switch_profile_help
@@ -127,6 +130,7 @@ switch_profile () {
   fi
 }
 
+### MAIN SCRIPT ###
 [ -n "$SWITCH_PROFILE_LIST" ] && complete -W "$SWITCH_PROFILE_LIST" switch_profile
 
 if ( [ -z ${BASH_NEXT_PROFILE+is_set} ] ); then {
