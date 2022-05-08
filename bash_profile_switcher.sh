@@ -127,7 +127,7 @@ switch_profile () {
 }
 
 ### MAIN SCRIPT ###
-[ -n "$SWITCH_PROFILE_LIST" ] && complete -W "$SWITCH_PROFILE_LIST" switch_profile
+[ -n "$SWITCH_PROFILE_LIST" ] && complete -o nospace -W "$SWITCH_PROFILE_LIST" switch_profile
 
 if ( [ -z ${BASH_NEXT_PROFILE+is_set} ] ); then {
   if ( [ -f "$HOME/$SWITCH_PROFILE_SAVED" ] ); then {
