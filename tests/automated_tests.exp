@@ -12,6 +12,7 @@ proc abort {} {
 }
 
 spawn docker-compose run --rm shell
+sleep 2
 expect "#"
 
 # Test profile list
