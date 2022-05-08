@@ -40,5 +40,5 @@ jobs:
 
       - name: Run tests
         run: |
-          ./tests/automated_tests.exp
+          make test
           exit $?
