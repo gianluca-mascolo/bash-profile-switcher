@@ -29,13 +29,14 @@
 
 # Setup default directory
 export SWITCH_PROFILE_DIRECTORY=".bash_profiles"
+export SWITCH_PROFILE_SAVED=".bash_saved_profile"
 [ -d "$HOME/$SWITCH_PROFILE_DIRECTORY" ] || mkdir "$HOME/$SWITCH_PROFILE_DIRECTORY"
 
 # Setup aliases to manage profiles
 alias load_bash_profile='eval [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.load" ] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.load"'
 alias unload_bash_profile='eval [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.unload" ] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.unload"'
-alias save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_DIRECTORY/saved_profile"'
-alias reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_DIRECTORY/saved_profile"'
+alias save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
+alias reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 
 # Create list of profiles from .load files
 
@@ -54,7 +55,7 @@ OPTIONS
   -k
     Keep env. Load selected profile without unloading current environment.
   -d
-    Don't load any profile in new bash shells. Delete ~/.bash_profiles/current_profile.
+    Don't load any profile in new bash shells. Delete ~/.bash_saved_profile.
   -t
     Temporary profile. Load selected profile in current shell without starting it in new bash shells
   -l
@@ -63,7 +64,7 @@ OPTIONS
 
 PROFILE
   A profile to load in ~/.bash_profiles. Profile files end with extension '.load' for loading (set variables) and '.unload' for unloading (unset variables)
-  Current profile is stored in environment variable BASH_CURRENT_PROFILE and in file ~/.bash_profiles/current_profile
+  Current profile is stored in environment variable BASH_CURRENT_PROFILE and in file ~/.bash_saved_profile
 
 Example:
 
@@ -134,8 +135,8 @@ switch_profile () {
 [ -n "$SWITCH_PROFILE_LIST" ] && complete -W "$SWITCH_PROFILE_LIST" switch_profile
 
 if ( [ -z ${BASH_NEXT_PROFILE+is_set} ] ); then {
-  if ( [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/saved_profile" ] ); then {
-    source "$HOME/$SWITCH_PROFILE_DIRECTORY/saved_profile"
+  if ( [ -f "$HOME/$SWITCH_PROFILE_SAVED" ] ); then {
+    source "$HOME/$SWITCH_PROFILE_SAVED"
     [ -n "${BASH_CURRENT_PROFILE+is_set}" ] && load_bash_profile
   }
   fi
