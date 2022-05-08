@@ -1,4 +1,4 @@
-# bash-profile-switcher
+# bash-profile-switcher ![CI](https://github.com/gianluca-mascolo/bash-profile-switcher/actions/workflows/testing.yml/badge.svg)
 Easily change environment variables and settings using bash
 
 ## About
