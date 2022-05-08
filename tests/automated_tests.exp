@@ -6,6 +6,7 @@ proc abort {} {
     send "exit\n"
     send "exit\n"
     sleep 1
+    send_user "\n\nERROR: Test Failure\n\n"
     close
     exit 1
 }
@@ -64,5 +65,6 @@ expect {
 
 send "exit\n"
 sleep 1
+send_user "\n\nOK: Test Success\n\n"
 close
 exit
