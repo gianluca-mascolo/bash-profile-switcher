@@ -115,9 +115,9 @@ switch_profile () {
   if ( [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.load" ] ); then {
      [ $KEEP_ENV -eq 0 ] && unload_bash_profile
      if ( [ $DELETE_PROFILE -eq 0 ] ); then {
-      if ( [ $TEMP_PROFILE -eq 0 ] ); then save_bash_profile; else export BASH_NEXT_PROFILE="$SELECTED_PROFILE"; fi
+              [ $TEMP_PROFILE -eq 0 ] && save_bash_profile || export BASH_NEXT_PROFILE="$SELECTED_PROFILE"
       } else {
-        reset_bash_profile
+              reset_bash_profile
       }
      fi
      exec bash
