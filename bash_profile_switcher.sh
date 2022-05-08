@@ -33,10 +33,10 @@ export SWITCH_PROFILE_SAVED=".bash_saved_profile"
 [ -d "$HOME/$SWITCH_PROFILE_DIRECTORY" ] || mkdir "$HOME/$SWITCH_PROFILE_DIRECTORY"
 
 # Setup aliases to manage profiles
-alias load_bash_profile='eval [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.load" ] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.load"'
-alias unload_bash_profile='eval [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.unload" ] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.unload"'
-alias save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
-alias reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
+alias _load_bash_profile='eval [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.load" ] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.load"'
+alias _unload_bash_profile='eval [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.unload" ] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.unload"'
+alias _save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
+alias _reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 
 # Create list of profiles from .load files
 
@@ -113,11 +113,11 @@ switch_profile () {
   SELECTED_PROFILE="$1"
   [ $DELETE_PROFILE -eq 1 ] && SELECTED_PROFILE="$BASH_CURRENT_PROFILE"
   if ( [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.load" ] ); then {
-     [ $KEEP_ENV -eq 0 ] && unload_bash_profile
+     [ $KEEP_ENV -eq 0 ] && _unload_bash_profile
      if ( [ $DELETE_PROFILE -eq 0 ] ); then {
-              [ $TEMP_PROFILE -eq 0 ] && save_bash_profile || export BASH_NEXT_PROFILE="$SELECTED_PROFILE"
+              [ $TEMP_PROFILE -eq 0 ] && _save_bash_profile || export BASH_NEXT_PROFILE="$SELECTED_PROFILE"
       } else {
-              reset_bash_profile
+              _reset_bash_profile
       }
      fi
      exec bash
@@ -137,12 +137,12 @@ switch_profile () {
 if ( [ -z ${BASH_NEXT_PROFILE+is_set} ] ); then {
   if ( [ -f "$HOME/$SWITCH_PROFILE_SAVED" ] ); then {
     source "$HOME/$SWITCH_PROFILE_SAVED"
-    [ -n "${BASH_CURRENT_PROFILE+is_set}" ] && load_bash_profile
+    [ -n "${BASH_CURRENT_PROFILE+is_set}" ] && _load_bash_profile
   }
   fi
 } else {
     export BASH_CURRENT_PROFILE="$BASH_NEXT_PROFILE"
     unset BASH_NEXT_PROFILE
-    load_bash_profile
+    _load_bash_profile
 }
 fi
