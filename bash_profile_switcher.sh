@@ -55,7 +55,7 @@ OPTIONS
   -k
     Keep env. Load selected profile without unloading current environment.
   -d
-    Don't load any profile in new bash shells. Delete ~/.bash_saved_profile.
+    Don't load profile. Unload current profile and don't load any profile in new bash shells
   -t
     Temporary profile. Load selected profile in current shell without starting it in new bash shells
   -l
@@ -76,10 +76,9 @@ EOF
 }
 
 switch_profile () {
-  local OPTIND OPTARG SELECTED_PROFILE KEEP_ENV DELETE_PROFILE TEMP_PROFILE
+  local OPTIND OPTARG SELECTED_PROFILE KEEP_ENV TEMP_PROFILE
 
   KEEP_ENV=0
-  DELETE_PROFILE=0
   TEMP_PROFILE=0
   while getopts "tkdhl" Option
   do
@@ -100,7 +99,9 @@ switch_profile () {
         return 0
       ;;
       d)
-        DELETE_PROFILE=1
+        _unload_bash_profile
+        _reset_bash_profile
+        exec bash
       ;;
       *)
         _switch_profile_help
@@ -111,15 +112,9 @@ switch_profile () {
   shift $(($OPTIND - 1))
 
   SELECTED_PROFILE="$1"
-  [ $DELETE_PROFILE -eq 1 ] && SELECTED_PROFILE="$BASH_CURRENT_PROFILE"
   if ( [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.load" ] ); then {
      [ $KEEP_ENV -eq 0 ] && _unload_bash_profile
-     if ( [ $DELETE_PROFILE -eq 0 ] ); then {
-              [ $TEMP_PROFILE -eq 0 ] && _save_bash_profile || export BASH_NEXT_PROFILE="$SELECTED_PROFILE"
-      } else {
-              _reset_bash_profile
-      }
-     fi
+     [ $TEMP_PROFILE -eq 0 ] && _save_bash_profile || export BASH_NEXT_PROFILE="$SELECTED_PROFILE"
      exec bash
   } else {
      echo "Selected profile does not exist."
