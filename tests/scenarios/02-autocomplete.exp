@@ -1,0 +1,15 @@
+# Test autocompletion
+send "switch_profile \t"
+expect {
+    timeout {abort 1}
+    "test"
+}
+
+# Delete line with CTRL-U
+send "\x15"
+expect {
+    timeout {abort 1}
+    "#"
+}
+
+set scenario_results(1) "PASS"

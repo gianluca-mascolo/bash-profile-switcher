@@ -1,2 +1,2 @@
-export VARUNSET="variable not setted"
+export var_unset="variable not setted"
 source ~/bash_profile_switcher.sh

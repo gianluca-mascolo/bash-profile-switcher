@@ -1,0 +1,20 @@
+# Load profile test1
+send "switch_profile test1\n"
+expect {
+    timeout {abort 2}
+    "#"
+}
+# Test variable in profile test1
+send "echo \$check_var_test1\n"
+expect {
+    timeout {abort 2}
+    "test1 variable"
+}
+
+send "echo \$check_var_common\n"
+expect {
+    timeout {abort 2}
+    "test1 common"
+}
+
+set scenario_results(2) "PASS"
