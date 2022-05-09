@@ -40,5 +40,6 @@ jobs:
 
       - name: Run tests
         run: |
+          make clean
           make test
           exit $?
