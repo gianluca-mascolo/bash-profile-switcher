@@ -1,19 +1,19 @@
 #!/usr/bin/expect -f
 set timeout 2
 set send_human {.1 .3 1 .05 2}
-
+set scenario_index 0
 proc abort {s} {
     global scenario_results
     set scenario_results($s) "FAIL"
-    puts "\n\n--- TEST RESULTS ---\n"
+    puts "\n--- TEST RESULTS ---"
     for { set index 0 } { $index < [array size scenario_results] } { incr index } {
-        set sn [ expr $index + 1]
-        puts "Scenario $sn: $scenario_results($index)\n"
+        set sn [format {%02d} [ expr $index + 1]]
+        puts "Scenario $sn: $scenario_results($index)"
     }
     send "exit\n"
     send "exit\n"
     sleep 1
-    puts "ERROR: Test Failure\n"
+    puts "ERROR: Test Failure"
     close
     exit 1
 }
@@ -26,14 +26,18 @@ source ./tests/scenarios/01-list-profiles.exp
 source ./tests/scenarios/02-autocomplete.exp
 source ./tests/scenarios/03-check-var-test1.exp
 source ./tests/scenarios/04-check-var-test2.exp
+source ./tests/scenarios/05-reset-profile.exp
+source ./tests/scenarios/06-temporary-profile.exp
+source ./tests/scenarios/07-keep-profile.exp
+source ./tests/scenarios/08-unexistent-profile.exp
 
 send "exit\n"
 sleep 1
-puts "\n\n--- TEST RESULTS ---\n"
+puts "\n--- TEST RESULTS ---"
 for { set index 0 } { $index < [array size scenario_results] } { incr index } {
-    set sn [ expr $index + 1]
-    puts "Scenario $sn: $scenario_results($index)\n"
+    set sn [format {%02d} [ expr $index + 1]]
+    puts "Scenario $sn: $scenario_results($index)"
 }
-puts "OK: Test Success\n"
+puts "OK: Test Success"
 close
 exit

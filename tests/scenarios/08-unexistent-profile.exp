@@ -1,0 +1,8 @@
+send "switch_profile idontexist\n"
+expect {
+    timeout {abort $scenario_index}
+    -re "Selected profile does not exist\..*#"
+}
+
+set scenario_results($scenario_index) "PASS - Non existent profile"
+set scenario_index [ expr $scenario_index + 1]

@@ -1,8 +1,9 @@
 # Test profile list
 send "switch_profile -l\n"
 expect {
-    timeout {abort 0}
+    timeout {abort $scenario_index}
     "test1"
 }
 
-set scenario_results(0) "PASS"
+set scenario_results($scenario_index) "PASS - List profiles"
+set scenario_index [ expr $scenario_index + 1]
