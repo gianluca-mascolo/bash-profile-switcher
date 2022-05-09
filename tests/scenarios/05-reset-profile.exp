@@ -1,0 +1,27 @@
+# Load profile test1
+send "switch_profile test1\n"
+expect {
+    timeout {abort $scenario_index}
+    "#"
+}
+
+send "cat ~/.bash_saved_profile\n"
+expect {
+    timeout {abort $scenario_index}
+    "export BASH_CURRENT_PROFILE=test1"
+}
+
+send "switch_profile -d\n"
+expect {
+    timeout {abort $scenario_index}
+    "#"
+}
+
+send "cat ~/.bash_saved_profile\n"
+expect {
+    timeout {abort $scenario_index}
+    "unset BASH_CURRENT_PROFILE"
+}
+
+set scenario_results($scenario_index) "PASS - Reset saved profile"
+set scenario_index [ expr $scenario_index + 1]

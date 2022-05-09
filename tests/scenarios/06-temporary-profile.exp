@@ -1,0 +1,27 @@
+send "switch_profile -d\n"
+expect {
+    timeout {abort $scenario_index}
+    "#"
+}
+
+send "switch_profile -t test1\n"
+expect {
+    timeout {abort $scenario_index}
+    "#"
+}
+
+# Check we are using test1
+send "echo profile:\$BASH_CURRENT_PROFILE\n"
+expect {
+    timeout {abort $scenario_index}
+    "profile:test1"
+}
+
+send "cat ~/.bash_saved_profile\n"
+expect {
+    timeout {abort $scenario_index}
+    "unset BASH_CURRENT_PROFILE"
+}
+
+set scenario_results($scenario_index) "PASS - Temporary profile check"
+set scenario_index [ expr $scenario_index + 1]
