@@ -1,0 +1,29 @@
+# Load profile test2
+send "switch_profile test2\n"
+expect {
+    timeout {abort 3}
+    "#"
+}
+
+# Test variable not set in profile test2
+send "echo \${check_var_test1:-\$var_unset}\n"
+expect {
+    timeout {abort 3}
+    "variable not setted"
+}
+
+# Test variable set in profile test2
+send "echo \$check_var_test2\n"
+expect {
+    timeout {abort 3}
+    "test2 variable"
+}
+
+# Test variable set in profile test2
+send "echo \$check_var_common\n"
+expect {
+    timeout {abort 3}
+    "test2 common"
+}
+
+set scenario_results(3) "PASS"
