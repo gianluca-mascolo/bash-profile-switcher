@@ -6,6 +6,8 @@ services:
     container_name: shell
     image: bash:5
     working_dir: /root
+    environment:
+      TERM: linux
     volumes:
       - type: bind
         source: $PWD/bash_profile_switcher.sh
