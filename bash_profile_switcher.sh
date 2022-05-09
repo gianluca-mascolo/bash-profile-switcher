@@ -25,6 +25,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+### AVOID SOURCING MORE THAN ONCE ###
+[ ${SWITCH_PROFILE_ENABLED:-0} -eq 1 ] && return 0
+export SWITCH_PROFILE_ENABLED=1
+
 ### GENERAL CONFIGURATION ###
 
 # Setup default directory
