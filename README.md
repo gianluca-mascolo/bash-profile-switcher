@@ -8,7 +8,8 @@ All you need to do is to create your custom profile files under `~/.bash_profile
 
 ## Installation
 
-Copy `bash_profile_switcher.sh` script in your homedir and source it at the end of your `~/.bashrc`. Reload your shell or close terminal.
+Use `make install`. It will install `bash_profile_switcher.sh` in `~/.bash_profile_switcher` and source it in your `~/.bashrc`. Reload your shell or open a new terminal to use it.<br>
+_Note_: You can use `make install INSTALL_PATH=<path>` to install the script in a custom path.
 
 ## Usage
 
