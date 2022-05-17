@@ -9,6 +9,7 @@ else
 endif
 
 test:
+	docker pull bash:5
 	./tests/automated_tests.exp
 clean:
 	docker-compose down
