@@ -1,7 +1,9 @@
 # Test profile list
+set scenario_results($scenario_index) "FAIL - List profiles"
+
 send "switch_profile -l\n"
 expect {
-    timeout {abort $scenario_index}
+    timeout abort
     "test1"
 }
 
