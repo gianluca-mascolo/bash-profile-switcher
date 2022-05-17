@@ -1,28 +1,30 @@
 # Load profile test2
+set scenario_results($scenario_index) "FAIL - Check test2 environment"
+
 send "switch_profile test2\n"
 expect {
-    timeout {abort $scenario_index}
+    timeout abort
     "#"
 }
 
 # Test variable not set in profile test2
 send "echo \${check_var_test1:-\$var_unset}\n"
 expect {
-    timeout {abort $scenario_index}
+    timeout abort
     "variable not setted"
 }
 
 # Test variable set in profile test2
 send "echo \$check_var_test2\n"
 expect {
-    timeout {abort $scenario_index}
+    timeout abort
     "test2 variable"
 }
 
 # Test variable set in profile test2
 send "echo \$check_var_common\n"
 expect {
-    timeout {abort $scenario_index}
+    timeout abort
     "test2 common"
 }
 

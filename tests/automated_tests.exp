@@ -2,14 +2,18 @@
 set timeout 2
 set send_human {.1 .3 1 .05 2}
 set scenario_index 0
-proc abort {s} {
+
+proc print_results {} {
     global scenario_results
-    set scenario_results($s) "FAIL"
     puts "\n--- TEST RESULTS ---"
     for { set index 0 } { $index < [array size scenario_results] } { incr index } {
         set sn [format {%02d} [ expr $index + 1]]
         puts "Scenario $sn: $scenario_results($index)"
     }
+}
+
+proc abort {} {
+    print_results
     send "exit\n"
     send "exit\n"
     sleep 1
@@ -33,11 +37,7 @@ source ./tests/scenarios/08-unexistent-profile.exp
 
 send "exit\n"
 sleep 1
-puts "\n--- TEST RESULTS ---"
-for { set index 0 } { $index < [array size scenario_results] } { incr index } {
-    set sn [format {%02d} [ expr $index + 1]]
-    puts "Scenario $sn: $scenario_results($index)"
-}
+print_results
 puts "OK: Test Success"
 close
 exit

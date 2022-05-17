@@ -1,14 +1,16 @@
 # Test autocompletion
+set scenario_results($scenario_index) "FAIL - Check autocomplete"
+
 send "switch_profile \t"
 expect {
-    timeout {abort $scenario_index}
+    timeout abort
     "test"
 }
 
 # Delete line with CTRL-U
 send "\x15"
 expect {
-    timeout {abort $scenario_index}
+    timeout abort
     "#"
 }
 

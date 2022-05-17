@@ -1,6 +1,8 @@
+set scenario_results($scenario_index) "FAIL - Non existent profile"
+
 send "switch_profile idontexist\n"
 expect {
-    timeout {abort $scenario_index}
+    timeout abort
     -re "Selected profile does not exist\..*#"
 }
 
