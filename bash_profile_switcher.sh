@@ -40,11 +40,16 @@ alias _save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFI
 alias _reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 
 # Create list of profiles from .load files
+_switch_profile_list () {
+  local PROFILE_LIST
+  # Note: If there are no matching files, echo *.load output literally "*.load"
+  PROFILE_LIST="$(cd "$HOME/$SWITCH_PROFILE_DIRECTORY"; echo *.load)"
+  PROFILE_LIST="${PROFILE_LIST//.load/}"
+  [ "$PROFILE_LIST" = '*' ] && PROFILE_LIST=""
+  echo "$PROFILE_LIST"
+}
 
-# Note: If there are no matching files, echo *.load output literally "*.load"
-SWITCH_PROFILE_LIST="$(cd "$HOME/$SWITCH_PROFILE_DIRECTORY"; echo *.load)"
-SWITCH_PROFILE_LIST="${SWITCH_PROFILE_LIST//.load/}"
-[ "$SWITCH_PROFILE_LIST" = '*' ] && SWITCH_PROFILE_LIST=""
+SWITCH_PROFILE_LIST=$(_switch_profile_list)
 export SWITCH_PROFILE_LIST
 
 ### FUNCTION DECLARATION ###
@@ -91,6 +96,8 @@ switch_profile () {
         TEMP_PROFILE=1
       ;;
       l)
+        SWITCH_PROFILE_LIST=$(_switch_profile_list)
+        export SWITCH_PROFILE_LIST
         echo "Available profiles:"
         echo -e "${SWITCH_PROFILE_LIST// /\\n}"
         return 0
@@ -114,15 +121,15 @@ switch_profile () {
 
   SELECTED_PROFILE="$1"
   if ( [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.load" ] ); then {
-     [ $KEEP_ENV -eq 0 ] && _unload_bash_profile
-     [ $TEMP_PROFILE -eq 0 ] && _save_bash_profile || export BASH_NEXT_PROFILE="$SELECTED_PROFILE"
-     exec bash
+      [ $KEEP_ENV -eq 0 ] && _unload_bash_profile
+      [ $TEMP_PROFILE -eq 0 ] && _save_bash_profile || export BASH_NEXT_PROFILE="$SELECTED_PROFILE"
+      exec bash
   } else {
-     _switch_profile_help
-     echo "Selected profile does not exist."
-     switch_profile -l
-     echo ""
-     return 1
+      _switch_profile_help
+      echo "Selected profile does not exist."
+      switch_profile -l
+      echo ""
+      return 1
   }
   fi
 }
