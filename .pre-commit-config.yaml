@@ -8,3 +8,13 @@ repos:
     -   id: end-of-file-fixer
     -   id: check-yaml
     -   id: check-added-large-files
+-   repo: local
+    hooks:
+    -   id: shell-fmt
+        name: shfmt
+        description: Check all shell scripts are in canonical format.
+        entry: shfmt
+        language: system
+        types: [file, shell]
+        exclude_types: [zsh]
+        args: [-d,-i3]
