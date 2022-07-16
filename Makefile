@@ -9,6 +9,10 @@ else
 endif
 
 test:
+	echo "Checking shell format..."
+	docker run --rm -v "$(PWD)/bash_profile_switcher.sh:/tmp/bash_profile_switcher.sh:ro" mvdan/shfmt:v3 -d -i 4 /tmp/bash_profile_switcher.sh
+	echo "Analyze with shellcheck..."
+	shellcheck bash_profile_switcher.sh
 	docker pull bash:5
 	./tests/automated_tests.exp
 clean:
