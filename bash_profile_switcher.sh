@@ -41,22 +41,22 @@ alias _save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFI
 alias _reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 
 # Create list of profiles from .load files
-_switch_profile_list () {
-  local PROFILE_LIST
-  # Note: If there are no matching files, echo *.load output literally "*.load"
-  PROFILE_LIST="$(echo "$HOME/$SWITCH_PROFILE_DIRECTORY/"*.load)"
-  PROFILE_LIST="${PROFILE_LIST//$HOME\/$SWITCH_PROFILE_DIRECTORY\//}"
-  PROFILE_LIST="${PROFILE_LIST//.load/}"
-  [ "$PROFILE_LIST" = '*' ] && PROFILE_LIST=""
-  echo "$PROFILE_LIST"
+_switch_profile_list() {
+	local PROFILE_LIST
+	# Note: If there are no matching files, echo *.load output literally "*.load"
+	PROFILE_LIST="$(echo "$HOME/$SWITCH_PROFILE_DIRECTORY/"*.load)"
+	PROFILE_LIST="${PROFILE_LIST//$HOME\/$SWITCH_PROFILE_DIRECTORY\//}"
+	PROFILE_LIST="${PROFILE_LIST//.load/}"
+	[ "$PROFILE_LIST" = '*' ] && PROFILE_LIST=""
+	echo "$PROFILE_LIST"
 }
 
 SWITCH_PROFILE_LIST=$(_switch_profile_list)
 export SWITCH_PROFILE_LIST
 
 ### FUNCTION DECLARATION ###
-_switch_profile_help () {
-cat << EOF
+_switch_profile_help() {
+	cat <<EOF
 switch_profile [options] profile
 
 OPTIONS
@@ -83,73 +83,75 @@ Example:
 EOF
 }
 
-switch_profile () {
-  local OPTIND OPTARG SELECTED_PROFILE KEEP_ENV TEMP_PROFILE
+switch_profile() {
+	local OPTIND OPTARG SELECTED_PROFILE KEEP_ENV TEMP_PROFILE
 
-  KEEP_ENV=0
-  TEMP_PROFILE=0
-  while getopts "tkdhl" Option
-  do
-    case $Option in
-      k)
-        KEEP_ENV=1
-      ;;
-      t)
-        TEMP_PROFILE=1
-      ;;
-      l)
-        SWITCH_PROFILE_LIST=$(_switch_profile_list)
-        export SWITCH_PROFILE_LIST
-        [ -n "$SWITCH_PROFILE_LIST" ] && complete -o nospace -W "$SWITCH_PROFILE_LIST" switch_profile
-        echo "Available profiles:"
-        echo -e "${SWITCH_PROFILE_LIST// /\\n}"
-        return 0
-      ;;
-      h)
-        _switch_profile_help
-        return 0
-      ;;
-      d)
-        _unload_bash_profile
-        _reset_bash_profile
-        exec bash
-      ;;
-      *)
-        _switch_profile_help
-        return 1
-      ;;
-    esac
-  done
-  shift $((OPTIND - 1))
+	KEEP_ENV=0
+	TEMP_PROFILE=0
+	while getopts "tkdhl" Option; do
+		case $Option in
+		k)
+			KEEP_ENV=1
+			;;
+		t)
+			TEMP_PROFILE=1
+			;;
+		l)
+			SWITCH_PROFILE_LIST=$(_switch_profile_list)
+			export SWITCH_PROFILE_LIST
+			[ -n "$SWITCH_PROFILE_LIST" ] && complete -o nospace -W "$SWITCH_PROFILE_LIST" switch_profile
+			echo "Available profiles:"
+			echo -e "${SWITCH_PROFILE_LIST// /\\n}"
+			return 0
+			;;
+		h)
+			_switch_profile_help
+			return 0
+			;;
+		d)
+			_unload_bash_profile
+			_reset_bash_profile
+			exec bash
+			;;
+		*)
+			_switch_profile_help
+			return 1
+			;;
+		esac
+	done
+	shift $((OPTIND - 1))
 
-  SELECTED_PROFILE="$1"
-  if [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.load" ]; then {
-      [ $KEEP_ENV -eq 0 ] && _unload_bash_profile
-      if [ $TEMP_PROFILE -eq 0 ]; then _save_bash_profile; else export BASH_NEXT_PROFILE="$SELECTED_PROFILE"; fi
-      exec bash
-  } else {
-      _switch_profile_help
-      echo "Selected profile does not exist."
-      switch_profile -l
-      echo ""
-      return 1
-  }
-  fi
+	SELECTED_PROFILE="$1"
+	if [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.load" ]; then {
+		[ $KEEP_ENV -eq 0 ] && _unload_bash_profile
+		if [ $TEMP_PROFILE -eq 0 ]; then _save_bash_profile; else export BASH_NEXT_PROFILE="$SELECTED_PROFILE"; fi
+		exec bash
+	}; else
+		{
+			_switch_profile_help
+			echo "Selected profile does not exist."
+			switch_profile -l
+			echo ""
+			return 1
+		}
+	fi
 }
 
 ### MAIN SCRIPT ###
 [ -n "$SWITCH_PROFILE_LIST" ] && complete -o nospace -W "$SWITCH_PROFILE_LIST" switch_profile
 
 if [ -z ${BASH_NEXT_PROFILE+is_set} ]; then {
-  if [ -f "$HOME/$SWITCH_PROFILE_SAVED" ]; then {
-# shellcheck source=/dev/null
-    source "$HOME/$SWITCH_PROFILE_SAVED"
-    [ -n "${BASH_CURRENT_PROFILE+is_set}" ] && _load_bash_profile
-  }
-  fi
-} else {
-    export BASH_CURRENT_PROFILE="$BASH_NEXT_PROFILE"
-    unset BASH_NEXT_PROFILE
-    _load_bash_profile
-}
+	if [ -f "$HOME/$SWITCH_PROFILE_SAVED" ]; then
+		{
+			# shellcheck source=/dev/null
+			source "$HOME/$SWITCH_PROFILE_SAVED"
+			[ -n "${BASH_CURRENT_PROFILE+is_set}" ] && _load_bash_profile
+		}
+	fi
+}; else
+	{
+		export BASH_CURRENT_PROFILE="$BASH_NEXT_PROFILE"
+		unset BASH_NEXT_PROFILE
+		_load_bash_profile
+	}
 fi
