@@ -18,3 +18,10 @@ repos:
         types: [file, shell]
         exclude_types: [zsh]
         args: [-w,-i,"4"]
+    -   id: shell-check
+        name: shellcheck
+        description: Shell script analysis tool
+        entry: shellcheck
+        language: system
+        types: [file, shell]
+        files: ^bash_profile_switcher.sh$
