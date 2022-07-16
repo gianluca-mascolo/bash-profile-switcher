@@ -17,4 +17,4 @@ repos:
         language: system
         types: [file, shell]
         exclude_types: [zsh]
-        args: [-d,-i,"3"]
+        args: [-w,-i,"4"]
