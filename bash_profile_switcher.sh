@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Bash profile switcher
 
 # bash-profile-switcher.sh
@@ -43,7 +44,8 @@ alias _reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWIT
 _switch_profile_list () {
   local PROFILE_LIST
   # Note: If there are no matching files, echo *.load output literally "*.load"
-  PROFILE_LIST="$(cd "$HOME/$SWITCH_PROFILE_DIRECTORY"; echo *.load)"
+  PROFILE_LIST="$(echo "$HOME/$SWITCH_PROFILE_DIRECTORY/"*.load)"
+  PROFILE_LIST="${PROFILE_LIST//$HOME\/$SWITCH_PROFILE_DIRECTORY\//}"
   PROFILE_LIST="${PROFILE_LIST//.load/}"
   [ "$PROFILE_LIST" = '*' ] && PROFILE_LIST=""
   echo "$PROFILE_LIST"
@@ -118,12 +120,12 @@ switch_profile () {
       ;;
     esac
   done
-  shift $(($OPTIND - 1))
+  shift $((OPTIND - 1))
 
   SELECTED_PROFILE="$1"
-  if ( [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.load" ] ); then {
+  if [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.load" ]; then {
       [ $KEEP_ENV -eq 0 ] && _unload_bash_profile
-      [ $TEMP_PROFILE -eq 0 ] && _save_bash_profile || export BASH_NEXT_PROFILE="$SELECTED_PROFILE"
+      if [ $TEMP_PROFILE -eq 0 ]; then _save_bash_profile; else export BASH_NEXT_PROFILE="$SELECTED_PROFILE"; fi
       exec bash
   } else {
       _switch_profile_help
@@ -138,8 +140,9 @@ switch_profile () {
 ### MAIN SCRIPT ###
 [ -n "$SWITCH_PROFILE_LIST" ] && complete -o nospace -W "$SWITCH_PROFILE_LIST" switch_profile
 
-if ( [ -z ${BASH_NEXT_PROFILE+is_set} ] ); then {
-  if ( [ -f "$HOME/$SWITCH_PROFILE_SAVED" ] ); then {
+if [ -z ${BASH_NEXT_PROFILE+is_set} ]; then {
+  if [ -f "$HOME/$SWITCH_PROFILE_SAVED" ]; then {
+# shellcheck source=/dev/null
     source "$HOME/$SWITCH_PROFILE_SAVED"
     [ -n "${BASH_CURRENT_PROFILE+is_set}" ] && _load_bash_profile
   }
