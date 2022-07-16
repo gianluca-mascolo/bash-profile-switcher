@@ -137,7 +137,6 @@ switch_profile() {
     fi
 }
 
-#
 ### MAIN SCRIPT ###
 [ -n "$SWITCH_PROFILE_LIST" ] && complete -o nospace -W "$SWITCH_PROFILE_LIST" switch_profile
 
