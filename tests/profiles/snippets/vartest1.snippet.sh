@@ -11,6 +11,7 @@ unload)
     ;;
 *)
     true
+    true
     ;;
 esac
 
