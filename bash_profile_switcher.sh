@@ -35,7 +35,7 @@ export SWITCH_PROFILE_DIRECTORY=".bash_profile.d"
 export SWITCH_PROFILE_SAVED=".bash_saved_profile"
 
 # Setup aliases to manage profiles
-alias _load_bash_profile='eval [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.load" ] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.load"'
+alias _load_bash_profile='eval [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.profile" ] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.profile"'
 alias _unload_bash_profile='eval [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.unload" ] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.unload"'
 alias _save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 alias _reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
@@ -79,13 +79,13 @@ _snippet() {
     return $exit_status
 }
 
-# Create list of profiles from .load files
+# Create list of profiles from .profile files
 _switch_profile_list() {
     local PROFILE_LIST
-    # Note: If there are no matching files, echo *.load output literally "*.load"
-    PROFILE_LIST="$(echo "$HOME/$SWITCH_PROFILE_DIRECTORY/"*.load)"
+    # Note: If there are no matching files, echo *.profile output literally "*.profile"
+    PROFILE_LIST="$(echo "$HOME/$SWITCH_PROFILE_DIRECTORY/"*.profile)"
     PROFILE_LIST="${PROFILE_LIST//$HOME\/$SWITCH_PROFILE_DIRECTORY\//}"
-    PROFILE_LIST="${PROFILE_LIST//.load/}"
+    PROFILE_LIST="${PROFILE_LIST//.profile/}"
     [ "$PROFILE_LIST" = '*' ] && PROFILE_LIST=""
     echo "$PROFILE_LIST"
 }
@@ -161,7 +161,7 @@ switch_profile() {
     shift $((OPTIND - 1))
 
     SELECTED_PROFILE="$1"
-    if [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.load" ]; then {
+    if [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.profile" ]; then {
         [ $KEEP_ENV -eq 0 ] && _unload_bash_profile
         if [ $TEMP_PROFILE -eq 0 ]; then _save_bash_profile; else export BASH_NEXT_PROFILE="$SELECTED_PROFILE"; fi
         exec bash
