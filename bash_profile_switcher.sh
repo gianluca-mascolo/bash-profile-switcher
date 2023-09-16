@@ -29,7 +29,7 @@
 ### GENERAL CONFIGURATION ###
 
 # Setup default directory
-export SWITCH_PROFILE_DIRECTORY=".bash_profiles"
+export SWITCH_PROFILE_DIRECTORY=".bash_profile.d"
 [ -d "$HOME/$SWITCH_PROFILE_DIRECTORY" ] || mkdir "$HOME/$SWITCH_PROFILE_DIRECTORY"
 # Setup save profile filename
 export SWITCH_PROFILE_SAVED=".bash_saved_profile"
