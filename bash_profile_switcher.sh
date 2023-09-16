@@ -40,6 +40,45 @@ alias _unload_bash_profile='eval [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CU
 alias _save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 alias _reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 
+_snippet() {
+    local -a snippet_array
+    local -r snippet_cmd="$1"
+    local -r snippet_name="$2"
+    local exit_status=0
+    local IFS=':'
+
+    read -r -a snippet_array <<<"${SWITCH_PROFILE_SNIPPETS:-}"
+    case "$snippet_cmd" in
+    push)
+        echo "${snippet_array[*]}" | grep -qwF "$snippet_name" || snippet_array+=("$snippet_name")
+        export SWITCH_PROFILE_SNIPPETS="${snippet_array[*]}"
+        ;;
+    pop)
+        for index in "${!snippet_array[@]}"; do
+            {
+                echo "${snippet_array[$index]}" | grep -qwF "$snippet_name" && unset "snippet_array[$index]"
+            }
+        done
+        export SWITCH_PROFILE_SNIPPETS="${snippet_array[*]}"
+        ;;
+    search)
+        exit_status=1
+        for index in "${!snippet_array[@]}"; do
+            {
+                if echo "${snippet_array[$index]}" | grep -qwF "$snippet_name"; then
+                    exit_status=0
+                    break
+                fi
+            }
+        done
+        ;;
+    *)
+        echo "${SWITCH_PROFILE_SNIPPETS:-}"
+        ;;
+    esac
+    return $exit_status
+}
+
 # Create list of profiles from .load files
 _switch_profile_list() {
     local PROFILE_LIST
