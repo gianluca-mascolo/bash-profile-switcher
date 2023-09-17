@@ -1,2 +1,5 @@
-export check_var_test1="test1 variable"
-export check_var_common="test1 common"
+# export check_var_test1="test1 variable"
+   # export check_var_common="test1 common"
+
+             vartest1
+ varcommon # prova
