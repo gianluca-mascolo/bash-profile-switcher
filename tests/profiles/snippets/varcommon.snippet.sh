@@ -1,14 +1,12 @@
 # shellcheck shell=bash
-SNIPPET_NAME="vartest1"
+SNIPPET_NAME="varcommon"
 case "$1" in
 load)
-    export check_var_test2="test2 variable"
-    export common_value="test2 common"
+    export check_var_common="${common_value:-}"
     _snippet push "$SNIPPET_NAME" 2>/dev/null
     ;;
 unload)
-    unset check_var_test2
-    unset common_value
+    unset check_var_common
     _snippet pop "$SNIPPET_NAME" 2>/dev/null
     ;;
 *)
