@@ -1,5 +1,5 @@
 # shellcheck shell=bash
-SNIPPET_NAME="vartest1"
+SNIPPET_NAME="$(basename "${BASH_SOURCE[0]}" .sh)"
 case "$1" in
 load)
     export check_var_test1="test1 variable"

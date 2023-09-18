@@ -33,6 +33,7 @@ export SWITCH_PROFILE_DIRECTORY=".bash_profile.d"
 [ -d "$HOME/$SWITCH_PROFILE_DIRECTORY" ] || mkdir "$HOME/$SWITCH_PROFILE_DIRECTORY"
 # Setup save profile filename
 export SWITCH_PROFILE_SAVED=".bash_saved_profile"
+export SWITCH_PROFILE_SNIPPETS=""
 
 # Setup aliases to manage profiles
 alias _save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'

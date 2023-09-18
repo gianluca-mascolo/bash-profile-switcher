@@ -1,5 +1,5 @@
-# export check_var_test1="test1 variable"
-   # export check_var_common="test1 common"
+# comment and spaces will be stripped
+   # out while parsing the configuration
 
              vartest1
- varcommon # prova
+ varcommon # also if you comment the single snippet name
