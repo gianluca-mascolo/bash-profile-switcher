@@ -35,28 +35,25 @@ export SWITCH_PROFILE_DIRECTORY=".bash_profile.d"
 # Setup save profile filename
 export SWITCH_PROFILE_SAVED=".bash_saved_profile"
 export SWITCH_PROFILE_SNIPPETS=""
-
 # Setup aliases to manage profiles
 alias _save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 alias _reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
+
 _parse_profile() {
-    local FILENAME
-    FILENAME="$HOME/$SWITCH_PROFILE_DIRECTORY/${BASH_CURRENT_PROFILE}.profile"
-    if [ -f "$FILENAME" ]; then
+    local VALUE
+    local SNIPPET
+    VALUE="$2"
+    if [[ "$VALUE" =~ ^[[:blank:]]*([^# ]+)([[:blank:]]|$) ]]; then
         {
-            while read -r line; do
-                {
-                    SNIPPET="$(echo "$line" | sed -r -e 's/^[[:blank:]]*([^# ]*)($|[[:blank:]]+#.*$|#.*$)/\1/' -e '/^$/D')"
-                    [ -n "${SNIPPET:+is_set}" ] && [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" ] && echo "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh"
-                }
-            done <"$FILENAME"
+            SNIPPET="${BASH_REMATCH[1]}"
+            [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" ] && LOAD_SNIPPETS+=("$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh")
         }
     fi
     return 0
 }
 # shellcheck disable=SC2154
-alias _load_bash_profile='for p in $(_parse_profile); do source "$p" load; done'
-alias _unload_bash_profile='for p in $(_parse_profile); do source "$p" unload; done'
+alias _load_bash_profile='for ((n=0;n<${#LOAD_SNIPPETS[@]};n++)); do source "${LOAD_SNIPPETS[$n]}" load; done'
+alias _unload_bash_profile='for ((n=$((${#LOAD_SNIPPETS[@]}-1));n>=0;n--)); do source "${LOAD_SNIPPETS[$n]}" unload; done'
 
 _snippet() {
     local -a snippet_array
@@ -180,6 +177,9 @@ switch_profile() {
 
     SELECTED_PROFILE="$1"
     if [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.profile" ]; then {
+        unset LOAD_SNIPPETS
+        declare -a LOAD_SNIPPETS
+        [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${BASH_CURRENT_PROFILE}.profile" ] && mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${BASH_CURRENT_PROFILE}.profile"
         [ $KEEP_ENV -eq 0 ] && _unload_bash_profile
         if [ $TEMP_PROFILE -eq 0 ]; then _save_bash_profile; else export BASH_NEXT_PROFILE="$SELECTED_PROFILE"; fi
         exec bash
@@ -202,12 +202,22 @@ if [ -z ${BASH_NEXT_PROFILE+is_set} ]; then {
         {
             # shellcheck source=/dev/null
             source "$HOME/$SWITCH_PROFILE_SAVED"
-            [ -n "${BASH_CURRENT_PROFILE+is_set}" ] && _load_bash_profile
+            if [ -n "${BASH_CURRENT_PROFILE+is_set}" ]; then
+                {
+                    unset LOAD_SNIPPETS
+                    declare -a LOAD_SNIPPETS
+                    mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${BASH_CURRENT_PROFILE}.profile"
+                    _load_bash_profile
+                }
+            fi
         }
     fi
 }; else
     {
         export BASH_CURRENT_PROFILE="$BASH_NEXT_PROFILE"
+        unset LOAD_SNIPPETS
+        declare -a LOAD_SNIPPETS
+        mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${BASH_CURRENT_PROFILE}.profile"
         unset BASH_NEXT_PROFILE
         _load_bash_profile
     }
