@@ -9,7 +9,7 @@ load)
     ;;
 unload)
     # unload your settings here >>>
-    export var1="test1 variable"
+    unset var1
     # <<<
     _snippet pop "$SNIPPET_NAME" 2>/dev/null
     ;;
