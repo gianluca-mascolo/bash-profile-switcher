@@ -31,6 +31,7 @@
 # Setup default directory
 export SWITCH_PROFILE_DIRECTORY=".bash_profile.d"
 [ -d "$HOME/$SWITCH_PROFILE_DIRECTORY" ] || mkdir "$HOME/$SWITCH_PROFILE_DIRECTORY"
+[ -d "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets" ] || mkdir "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets"
 # Setup save profile filename
 export SWITCH_PROFILE_SAVED=".bash_saved_profile"
 export SWITCH_PROFILE_SNIPPETS=""
