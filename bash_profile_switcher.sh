@@ -32,14 +32,27 @@
 export SWITCH_PROFILE_DIRECTORY=".bash_profile.d"
 [ -d "$HOME/$SWITCH_PROFILE_DIRECTORY" ] || mkdir "$HOME/$SWITCH_PROFILE_DIRECTORY"
 [ -d "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets" ] || mkdir "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets"
+
 # Setup save profile filename
 export SWITCH_PROFILE_SAVED=".bash_saved_profile"
+
+# List of loaded snippets separated by colon like
+# snipname1:snipname2:snippetname3
 export SWITCH_PROFILE_SNIPPETS=""
+
 # Setup aliases to manage profiles
 alias _get_snippets='eval unset LOAD_SNIPPETS; declare -a LOAD_SNIPPETS; mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${BASH_CURRENT_PROFILE}.profile"'
 alias _save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 alias _reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 
+# shellcheck disable=SC2154
+alias _load_bash_profile='_get_snippets; for ((n=0;n<${#LOAD_SNIPPETS[@]};n++)); do source "${LOAD_SNIPPETS[$n]}" load; done'
+alias _unload_bash_profile='for ((n=$((${#LOAD_SNIPPETS[@]}-1));n>=0;n--)); do source "${LOAD_SNIPPETS[$n]}" unload; done'
+
+# _parse_profile
+# To be used with mapfile
+# Every line in the file is parsed and checked for a corresponding snippet to be loaded
+# It will store the valid snippets in global array LOAD_SNIPPETS
 _parse_profile() {
     local VALUE
     local SNIPPET
@@ -52,10 +65,12 @@ _parse_profile() {
     fi
     return 0
 }
-# shellcheck disable=SC2154
-alias _load_bash_profile='_get_snippets; for ((n=0;n<${#LOAD_SNIPPETS[@]};n++)); do source "${LOAD_SNIPPETS[$n]}" load; done'
-alias _unload_bash_profile='for ((n=$((${#LOAD_SNIPPETS[@]}-1));n>=0;n--)); do source "${LOAD_SNIPPETS[$n]}" unload; done'
 
+# _snippet
+# Manage the status of snippets storing it in SWITCH_PROFILE_SNIPPETS if it has loaded or unloaded.
+# - push the snippet name into SWITCH_PROFILE_SNIPPETS only if the value is not already present
+# - pop the snippet name from SWITCH_PROFILE_SNIPPETS
+# - search if a snippet name is present in SWITCH_PROFILE_SNIPPETS
 _snippet() {
     local -a snippet_array
     local -r snippet_cmd="$1"
