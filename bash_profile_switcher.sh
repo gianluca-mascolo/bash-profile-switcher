@@ -202,11 +202,7 @@ if [ -z ${BASH_NEXT_PROFILE+is_set} ]; then {
         {
             # shellcheck source=/dev/null
             source "$HOME/$SWITCH_PROFILE_SAVED"
-            if [ -n "${BASH_CURRENT_PROFILE+is_set}" ]; then
-                {
-                    _load_bash_profile
-                }
-            fi
+            [ -n "${BASH_CURRENT_PROFILE+is_set}" ] && _load_bash_profile
         }
     fi
 }; else
