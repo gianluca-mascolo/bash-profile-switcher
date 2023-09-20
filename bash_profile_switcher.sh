@@ -71,43 +71,30 @@ _parse_profile() {
 # - push the snippet name into SWITCH_PROFILE_SNIPPETS only if the value is not already present
 # - pop the snippet name from SWITCH_PROFILE_SNIPPETS
 # - search if a snippet name is present in SWITCH_PROFILE_SNIPPETS
-_snippet() {
-    local -a snippet_array
-    local -r snippet_cmd="$1"
-    local -r snippet_name="$2"
-    local exit_status=0
-    local IFS=':'
 
-    read -r -a snippet_array <<<"${SWITCH_PROFILE_SNIPPETS:-}"
+_snippet() {
+    local -r snippet_cmd="${1:-}"
+    local -r snippet_name="${2:-}"
+    local -r REGEX="(^|.*:)(${snippet_name})(:.*|$)"
+
     case "$snippet_cmd" in
     push)
-        echo "${snippet_array[*]}" | grep -qwF "$snippet_name" || snippet_array+=("$snippet_name")
-        export SWITCH_PROFILE_SNIPPETS="${snippet_array[*]}"
+        if [[ "$SWITCH_PROFILE_SNIPPETS" =~ $REGEX ]]; then return 0; else SWITCH_PROFILE_SNIPPETS="${SWITCH_PROFILE_SNIPPETS}:${snippet_name}"; fi
+        export SWITCH_PROFILE_SNIPPETS=${SWITCH_PROFILE_SNIPPETS#:}
         ;;
     pop)
-        for index in "${!snippet_array[@]}"; do
-            {
-                echo "${snippet_array[$index]}" | grep -qwF "$snippet_name" && unset "snippet_array[$index]"
-            }
-        done
-        export SWITCH_PROFILE_SNIPPETS="${snippet_array[*]}"
+        if [[ "$SWITCH_PROFILE_SNIPPETS" =~ $REGEX ]]; then SWITCH_PROFILE_SNIPPETS="${BASH_REMATCH[1]%:}:${BASH_REMATCH[3]#:}"; else return 0; fi
+        SWITCH_PROFILE_SNIPPETS=${SWITCH_PROFILE_SNIPPETS%:}
+        export SWITCH_PROFILE_SNIPPETS=${SWITCH_PROFILE_SNIPPETS#:}
         ;;
     search)
-        exit_status=1
-        for index in "${!snippet_array[@]}"; do
-            {
-                if echo "${snippet_array[$index]}" | grep -qwF "$snippet_name"; then
-                    exit_status=0
-                    break
-                fi
-            }
-        done
+        if [[ "$SWITCH_PROFILE_SNIPPETS" =~ $REGEX ]]; then return 0; else return 1; fi
         ;;
     *)
         echo "${SWITCH_PROFILE_SNIPPETS:-}"
         ;;
     esac
-    return $exit_status
+    return 0
 }
 
 # Create list of profiles from .profile files

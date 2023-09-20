@@ -9,7 +9,7 @@ expect {
 send "echo \${SWITCH_PROFILE_SNIPPETS}\n"
 expect {
     timeout abort
-    "vartest1:varcommon"
+    -re "\[^:\]vartest1:varcommon\[^:\]"
 }
 
 set scenario_results($scenario_index) "PASS - Check snippet"
