@@ -127,14 +127,39 @@ OPTIONS
   -h Show help instructions (this help)
 
 PROFILE
-  A profile to load in ~/.bash_profiles. Profile files end with extension '.load' for loading (set variables) and '.unload' for unloading (unset variables)
-  Current profile is stored in environment variable BASH_CURRENT_PROFILE and in file ~/.bash_saved_profile
+  A profile to load in ~/$SWITCH_PROFILE_DIRECTORY. Profile files end with extension '.profile' and contains a list of snippets to be loaded.
+  Current profile is stored in environment variable BASH_CURRENT_PROFILE and in file ~/$SWITCH_PROFILE_SAVED
 
-Example:
+SNIPPETS
+
+  Snippets are .sh files located in ~/$SWITCH_PROFILE_DIRECTORY/snippets that accept load or unload as first positional parameter (\$1)
+  Each snippet will be included with source in your shell.
+
+EXAMPLE
+
+  Given the following setup ~/$SWITCH_PROFILE_DIRECTORY
+  ~]$ tree ~/.bash_profile.d/
+    $HOME/.bash_profile.d/
+    ├── dev.profile
+    └── snippets
+        ├── snip1.sh
+        └── snip2.sh
+
+  ~]$ cat ~/.bash_profile.d/dev.profile
+    snip1
+    snip2
 
   ~]$ switch_profile dev
 
-  To load profile dev from ~/.bash_profiles/dev.load and unload it from ~/.bash_profiles/dev.unload
+  snip1.sh and snip2.sh will be included into your bash shell.
+
+ADDENDUM
+
+  - Snippets will be loaded in the order the are listed into profile file.
+  - When you switch into a profile snippets are loaded with source command e.g. 'source snip1 load'
+  - When you change profile, current snippets are unloaded (except if you use -k) in reverse order
+    they are listed into profile file with source e.g. 'source snip1 unload'
+
 
 EOF
 }
