@@ -41,13 +41,13 @@ export SWITCH_PROFILE_SAVED=".bash_saved_profile"
 export SWITCH_PROFILE_SNIPPETS=""
 
 # Setup aliases to manage profiles
-alias _get_snippets='eval unset LOAD_SNIPPETS; declare -a LOAD_SNIPPETS; mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${BASH_CURRENT_PROFILE}.profile"'
 alias _save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 alias _reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 
+alias _get_snippets='eval unset LOAD_SNIPPETS; declare -a LOAD_SNIPPETS; mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${BASH_CURRENT_PROFILE}.profile"'
 # shellcheck disable=SC2154
-alias _load_bash_profile='_get_snippets; for ((n=0;n<${#LOAD_SNIPPETS[@]};n++)); do source "${LOAD_SNIPPETS[$n]}" load; done'
-alias _unload_bash_profile='for ((n=$((${#LOAD_SNIPPETS[@]}-1));n>=0;n--)); do source "${LOAD_SNIPPETS[$n]}" unload; done'
+alias _load_bash_profile='_get_snippets; for ((n=0;n<${#LOAD_SNIPPETS[*]};n++)); do source "${LOAD_SNIPPETS[$n]}" load; done'
+alias _unload_bash_profile='for ((n=-1;n>=-${#LOAD_SNIPPETS[*]};n--)); do source "${LOAD_SNIPPETS[$n]}" unload; done'
 
 # _parse_profile
 # To be used with mapfile
@@ -66,12 +66,11 @@ _parse_profile() {
     return 0
 }
 
-# _snippet
+# _snippet [push|pop|search] <snippet name>
 # Manage the status of snippets storing it in SWITCH_PROFILE_SNIPPETS if it has loaded or unloaded.
 # - push the snippet name into SWITCH_PROFILE_SNIPPETS only if the value is not already present
 # - pop the snippet name from SWITCH_PROFILE_SNIPPETS
 # - search if a snippet name is present in SWITCH_PROFILE_SNIPPETS
-
 _snippet() {
     local -r snippet_cmd="${1:-}"
     local -r snippet_name="${2:-}"
