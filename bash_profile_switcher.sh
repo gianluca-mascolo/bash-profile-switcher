@@ -41,10 +41,10 @@ export SWITCH_PROFILE_SAVED=".bash_saved_profile"
 export SWITCH_PROFILE_SNIPPETS=""
 
 # Setup aliases to manage profiles
-alias _save_bash_profile='eval echo "export BASH_CURRENT_PROFILE=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
-alias _reset_bash_profile='eval echo "unset BASH_CURRENT_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
+alias _save_bash_profile='eval echo "export SWITCH_PROFILE_CURRENT=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
+alias _reset_bash_profile='eval echo "unset SWITCH_PROFILE_CURRENT" > "$HOME/$SWITCH_PROFILE_SAVED"'
 
-alias _get_snippets='eval unset LOAD_SNIPPETS; declare -a LOAD_SNIPPETS; mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${BASH_CURRENT_PROFILE}.profile"'
+alias _get_snippets='eval unset LOAD_SNIPPETS; declare -a LOAD_SNIPPETS; mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SWITCH_PROFILE_CURRENT}.profile"'
 # shellcheck disable=SC2154
 alias _load_bash_profile='_get_snippets; for ((n=0;n<${#LOAD_SNIPPETS[*]};n++)); do source "${LOAD_SNIPPETS[$n]}" load; done'
 alias _unload_bash_profile='for ((n=-1;n>=-${#LOAD_SNIPPETS[*]};n--)); do source "${LOAD_SNIPPETS[$n]}" unload; done'
@@ -128,7 +128,7 @@ OPTIONS
 
 PROFILE
   A profile to load in ~/$SWITCH_PROFILE_DIRECTORY. Profile files end with extension '.profile' and contains a list of snippets to be loaded.
-  Current profile is stored in environment variable BASH_CURRENT_PROFILE and in file ~/$SWITCH_PROFILE_SAVED
+  Current profile is stored in environment variable SWITCH_PROFILE_CURRENT and in file ~/$SWITCH_PROFILE_SAVED
 
 SNIPPETS
 
@@ -205,7 +205,7 @@ switch_profile() {
     SELECTED_PROFILE="$1"
     if [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.profile" ]; then {
         [ $KEEP_ENV -eq 0 ] && _unload_bash_profile
-        if [ $TEMP_PROFILE -eq 0 ]; then _save_bash_profile; else export BASH_NEXT_PROFILE="$SELECTED_PROFILE"; fi
+        if [ $TEMP_PROFILE -eq 0 ]; then _save_bash_profile; else export SWITCH_PROFILE_NEXT="$SELECTED_PROFILE"; fi
         exec bash
     }; else
         {
@@ -221,18 +221,18 @@ switch_profile() {
 ### MAIN SCRIPT ###
 [ -n "$SWITCH_PROFILE_LIST" ] && complete -o nospace -W "$SWITCH_PROFILE_LIST" switch_profile
 
-if [ -z ${BASH_NEXT_PROFILE+is_set} ]; then {
+if [ -z ${SWITCH_PROFILE_NEXT+is_set} ]; then {
     if [ -f "$HOME/$SWITCH_PROFILE_SAVED" ]; then
         {
             # shellcheck source=/dev/null
             source "$HOME/$SWITCH_PROFILE_SAVED"
-            if [ -n "${BASH_CURRENT_PROFILE+is_set}" ]; then _load_bash_profile; fi
+            if [ -n "${SWITCH_PROFILE_CURRENT+is_set}" ]; then _load_bash_profile; fi
         }
     fi
 }; else
     {
-        export BASH_CURRENT_PROFILE="$BASH_NEXT_PROFILE"
-        unset BASH_NEXT_PROFILE
+        export SWITCH_PROFILE_CURRENT="$SWITCH_PROFILE_NEXT"
+        unset SWITCH_PROFILE_NEXT
         _load_bash_profile
     }
 fi
