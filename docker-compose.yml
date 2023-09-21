@@ -17,5 +17,5 @@ services:
         read_only: true
       - type: bind
         source: $PWD/tests/profiles/
-        target: /root/.bash_profiles/
+        target: /root/.bash_profile.d/
         read_only: true

@@ -24,4 +24,4 @@ repos:
         entry: shellcheck
         language: system
         types: [file, shell]
-        files: ^bash_profile_switcher.sh$
+        files: ^(bash_profile_switcher.sh|tests/profiles/snippets/.*\.sh)$

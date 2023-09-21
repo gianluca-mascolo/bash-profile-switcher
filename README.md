@@ -4,7 +4,8 @@ Easily change environment variables and settings using bash
 ## About
 
 This script aim to manage multiple profile files for bash. It's like having multiple `.bashrc` files to load or unload when needed.
-All you need to do is to create your custom profile files under `~/.bash_profiles` directory. Each profile must have extension `.load` where you define variables, aliases and so on. You can optionally create files with extension `.unload` to clear what is loaded with a speficic profile.
+You need to create your custom profile files under `~/.bash_profile.d` directory. Each profile must have extension `.profile` and it is a plain text file containing a list of "snippets" (one per line) to be loaded into your profile.
+Snippets are `.sh` files where you can set variables/aliases/functions or any command you want to execute when you spawn a shell ([snippet example](examples/snippet-example.sh)).
 
 ## Installation
 
@@ -13,7 +14,7 @@ _Note_: You can use `make install INSTALL_PATH=<path>` to install the script in 
 
 ## Usage
 
-Use `switch_profile` function to manage profiles
+Use `switch_profile` function to change profile
 
 ```
  ~]$ switch_profile -h
@@ -29,39 +30,36 @@ OPTIONS
   -l
     List available profiles
   -h Show help instructions (this help)
-
-PROFILE
-  A profile to load in ~/.bash_profiles. Profile files end with extension '.load' for loading (set variables) and '.unload' for unloading (unset variables)
-  Current profile is stored in environment variable BASH_CURRENT_PROFILE and in file ~/.bash_saved_profile
-
-Example:
-
-  ~]$ switch_profile dev
-
-  To load profile dev from ~/.bash_profiles/dev.load and unload it from ~/.bash_profiles/dev.unload
 ```
 
 ## Example
 
-Create the following profile files in `~/.bash_profiles`:
-
-> `myprofile.load`
-
-```bash
-export PS1="Funky Prompt:: \w ]\\$ "
+As an example take the following directory structure for `~/.bash_profile.d`
+```
+.bash_profile.d/
+├── foo.profile
+├── bar.profile
+└── snippets
+    ├── tools.sh
+    ├── cloudvars.sh
+    └── setpath.sh
 ```
 
-> `myprofile.unload`
-
-```bash
-unset PS1
 ```
-Then load it with: `switch_profile myprofile`
+]$ cat ~/.bash_profile.d/foo.profile
+tools
+cloudvars
+setpath
+]$ cat ~/.bash_profile.d/bar.profile
+setpath
+```
 
+When you do `switch_profile foo` snippets `tools.sh`,`cloudvars.sh`,`setpath.sh` will be loaded (in the same order they are listed in profile).
+On profile change `switch_profile bar` bash will first unload all the snippets applied by `foo` in reverse order then load the snippets listed in `bar`, that is `setpath.sh`
+``
 ## Issues
 
 * Spaces and blank characters are not supported on profile filenames
-* Unload files must be written manually to match exactly what you loaded or defined
 * Be careful when managing special variables like `PATH`
 
 ## Test automation

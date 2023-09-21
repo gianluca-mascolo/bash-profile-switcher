@@ -1,6 +1,6 @@
 set scenario_results($scenario_index) "FAIL - Reload list"
 
-system echo 'true' > ./tests/profiles/ephemeral.load
+system echo 'true' > ./tests/profiles/ephemeral.profile
 
 send "switch_profile -l\n"
 expect {
@@ -11,4 +11,4 @@ expect {
 set scenario_results($scenario_index) "PASS - Reload list"
 set scenario_index [ expr $scenario_index + 1]
 
-system rm -f ./tests/profiles/ephemeral.load
+system rm -f ./tests/profiles/ephemeral.profile

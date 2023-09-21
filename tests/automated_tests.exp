@@ -14,6 +14,7 @@ proc print_results {} {
 
 proc abort {} {
     print_results
+    sleep 1
     send "exit\n"
     send "exit\n"
     sleep 1
@@ -35,7 +36,9 @@ source ./tests/scenarios/06-temporary-profile.exp
 source ./tests/scenarios/07-keep-profile.exp
 source ./tests/scenarios/08-unexistent-profile.exp
 source ./tests/scenarios/09-reload-list.exp
+source ./tests/scenarios/10-check-snippet.exp
 
+sleep 1
 send "exit\n"
 sleep 1
 print_results

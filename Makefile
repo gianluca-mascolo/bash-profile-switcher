@@ -15,6 +15,8 @@ test:
 	shellcheck bash_profile_switcher.sh
 	docker pull bash:5
 	./tests/automated_tests.exp
+format:
+	shfmt -w -i 4 *.sh
 clean:
 	docker-compose down
 install:

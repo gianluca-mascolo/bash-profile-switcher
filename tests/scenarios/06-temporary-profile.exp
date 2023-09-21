@@ -13,7 +13,7 @@ expect {
 }
 
 # Check we are using test1
-send "echo profile:\$BASH_CURRENT_PROFILE\n"
+send "echo profile:\$SWITCH_PROFILE_CURRENT\n"
 expect {
     timeout abort
     "profile:test1"
@@ -22,7 +22,7 @@ expect {
 send "cat ~/.bash_saved_profile\n"
 expect {
     timeout abort
-    "unset BASH_CURRENT_PROFILE"
+    "unset SWITCH_PROFILE_CURRENT"
 }
 
 set scenario_results($scenario_index) "PASS - Temporary profile check"

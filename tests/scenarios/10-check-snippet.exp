@@ -1,0 +1,16 @@
+set scenario_results($scenario_index) "FAIL - Check snippet"
+
+send "switch_profile test1\n"
+expect {
+    timeout abort
+    "#"
+}
+
+send "echo \${SWITCH_PROFILE_SNIPPETS}\n"
+expect {
+    timeout abort
+    -re "\[^:\]vartest1:varcommon\[^:\]"
+}
+
+set scenario_results($scenario_index) "PASS - Check snippet"
+set scenario_index [ expr $scenario_index + 1]

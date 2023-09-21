@@ -1,0 +1,2 @@
+vartest2
+varcommon

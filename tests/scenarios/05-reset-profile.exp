@@ -10,7 +10,7 @@ expect {
 send "cat ~/.bash_saved_profile\n"
 expect {
     timeout abort
-    "export BASH_CURRENT_PROFILE=test1"
+    "export SWITCH_PROFILE_CURRENT=test1"
 }
 
 send "switch_profile -d\n"
@@ -22,7 +22,7 @@ expect {
 send "cat ~/.bash_saved_profile\n"
 expect {
     timeout abort
-    "unset BASH_CURRENT_PROFILE"
+    "unset SWITCH_PROFILE_CURRENT"
 }
 
 set scenario_results($scenario_index) "PASS - Reset saved profile"
