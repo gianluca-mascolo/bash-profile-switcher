@@ -12,7 +12,7 @@
 SNIPPET_NAME="$(basename "${BASH_SOURCE[0]}" .sh)"
 case "$1" in
 load)
-    _snippet search "$SNIPPET_NAME" && return 0
+    _snippet search "$SNIPPET_NAME" 2>/dev/null && return 0
     # load your settings here >>>
     mkcd() { [ -d "$1" ] || mkdir "$1" && cd "$1" || return 0; }
     pathctl() {
@@ -91,7 +91,7 @@ load)
     _snippet push "$SNIPPET_NAME" 2>/dev/null
     ;;
 unload)
-    _snippet search "$SNIPPET_NAME" || return 0
+    _snippet search "$SNIPPET_NAME" 2>/dev/null || return 0
     # unload your settings here >>>
     unset -f mkcd
     unset -f path_append
