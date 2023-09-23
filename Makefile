@@ -17,6 +17,7 @@ test:
 	./tests/automated_tests.exp
 format:
 	shfmt -w -i 4 *.sh
+	shfmt -w -i 4 snippets/*.sh
 clean:
 	docker-compose down
 install:
