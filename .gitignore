@@ -1,2 +1,5 @@
 README.md.backup
 ./tests/profiles/ephemeral.profile
+release
+release/**
+*.tar.gz
