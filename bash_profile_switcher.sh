@@ -181,7 +181,6 @@ switch_profile() {
             SWITCH_PROFILE_LIST=$(_switch_profile_list)
             export SWITCH_PROFILE_LIST
             [ -n "$SWITCH_PROFILE_LIST" ] && complete -o nospace -W "$SWITCH_PROFILE_LIST" switch_profile
-            echo "Available profiles:"
             echo -e "${SWITCH_PROFILE_LIST// /\\n}"
             return 0
             ;;
