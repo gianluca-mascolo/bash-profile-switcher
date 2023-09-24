@@ -39,6 +39,7 @@ format:
 .PHONY: clean
 clean:
 	docker-compose down
+	rm -f $(PACKAGE_NAME)_*.tar.gz
 
 .PHONY: install
 install:
