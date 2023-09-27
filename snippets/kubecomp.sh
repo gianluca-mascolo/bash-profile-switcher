@@ -10,6 +10,7 @@
 
 case "$1" in
 load)
+    # shellcheck disable=SC1090
     hash kubectl && source <(kubectl completion bash)
     ;;
 unload)
