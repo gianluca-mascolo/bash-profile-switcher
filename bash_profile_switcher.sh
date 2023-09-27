@@ -46,8 +46,8 @@ alias _reset_bash_profile='eval echo "unset SWITCH_PROFILE_CURRENT" > "$HOME/$SW
 
 alias _get_snippets='eval unset LOAD_SNIPPETS; declare -a LOAD_SNIPPETS; mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SWITCH_PROFILE_CURRENT}.profile"'
 # shellcheck disable=SC2154
-alias _load_bash_profile='_get_snippets; for ((n=0;n<${#LOAD_SNIPPETS[*]};n++)); do source "${LOAD_SNIPPETS[$n]}" load; done'
-alias _unload_bash_profile='for ((n=-1;n>=-${#LOAD_SNIPPETS[*]};n--)); do source "${LOAD_SNIPPETS[$n]}" unload; done'
+alias _load_bash_profile='_get_snippets; for ((n=0;n<${#LOAD_SNIPPETS[*]};n++)); do if ! _snippet search "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"; then source "${LOAD_SNIPPETS[$n]}" load && _snippet push "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"; fi; done'
+alias _unload_bash_profile='for ((n=-1;n>=-${#LOAD_SNIPPETS[*]};n--)); do if _snippet search "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"; then source "${LOAD_SNIPPETS[$n]}" unload && _snippet pop "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"; fi; done'
 
 # _parse_profile
 # To be used with mapfile
