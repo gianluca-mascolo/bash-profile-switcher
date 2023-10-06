@@ -225,13 +225,13 @@ if [ -z ${SWITCH_PROFILE_NEXT+is_set} ]; then {
         {
             # shellcheck source=/dev/null
             source "$HOME/$SWITCH_PROFILE_SAVED"
-            if [ -n "${SWITCH_PROFILE_CURRENT+is_set}" ]; then _load_bash_profile; fi
         }
     fi
 }; else
     {
         export SWITCH_PROFILE_CURRENT="$SWITCH_PROFILE_NEXT"
         unset SWITCH_PROFILE_NEXT
-        _load_bash_profile
     }
 fi
+
+if [ -n "${SWITCH_PROFILE_CURRENT+is_set}" ]; then _load_bash_profile; fi
