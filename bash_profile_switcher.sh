@@ -164,7 +164,7 @@ EOF
 
 switch_profile() {
     local OPTIND OPTARG SELECTED_PROFILE KEEP_ENV TEMP_PROFILE RESET_PROFILE
-
+    local -a SNIPPET_ARRAY
     KEEP_ENV=0
     TEMP_PROFILE=0
     RESET_PROFILE=0
@@ -199,11 +199,11 @@ switch_profile() {
     shift $((OPTIND - 1))
 
     if ! [ $KEEP_ENV -eq 1 ]; then
-        #[ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" ]
-        for ((n = -1; n >= -${#LOAD_SNIPPETS[*]}; n--)); do
-            if _snippet search "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"; then
+        IFS=':' read -r -a SNIPPET_ARRAY <<<"$SWITCH_PROFILE_SNIPPETS"
+        for ((n = -1; n >= -${#SNIPPET_ARRAY[*]}; n--)); do
+            if [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/${SNIPPET_ARRAY[$n]}.sh" ]; then
                 # shellcheck source=/dev/null
-                source "${LOAD_SNIPPETS[$n]}" unload && _snippet pop "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"
+                source "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/${SNIPPET_ARRAY[$n]}.sh" unload && _snippet pop "${SNIPPET_ARRAY[$n]}"
             fi
         done
     fi
