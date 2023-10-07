@@ -40,9 +40,6 @@ export SWITCH_PROFILE_SAVED=".bash_saved_profile"
 # snipname1:snipname2:snippetname3
 export SWITCH_PROFILE_SNIPPETS=""
 
-# Setup aliases to manage profiles
-alias _save_bash_profile='eval echo "export SWITCH_PROFILE_CURRENT=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
-
 # _parse_profile
 # To be used with mapfile
 # Every line in the file is parsed and checked for a corresponding snippet to be loaded
@@ -213,7 +210,11 @@ switch_profile() {
 
     SELECTED_PROFILE="$1"
     if [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.profile" ]; then {
-        if [ $TEMP_PROFILE -eq 0 ]; then _save_bash_profile; else export SWITCH_PROFILE_NEXT="$SELECTED_PROFILE"; fi
+        if [ $TEMP_PROFILE -eq 0 ]; then
+            echo "export SWITCH_PROFILE_CURRENT=$SELECTED_PROFILE" >"$HOME/$SWITCH_PROFILE_SAVED"
+        else
+            export SWITCH_PROFILE_NEXT="$SELECTED_PROFILE"
+        fi
         exec bash
     }; else
         {
