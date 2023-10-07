@@ -43,10 +43,6 @@ export SWITCH_PROFILE_SNIPPETS=""
 # Setup aliases to manage profiles
 alias _save_bash_profile='eval echo "export SWITCH_PROFILE_CURRENT=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
 
-alias _get_snippets='eval unset LOAD_SNIPPETS; declare -a LOAD_SNIPPETS; mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SWITCH_PROFILE_CURRENT}.profile"'
-# shellcheck disable=SC2154
-alias _load_bash_profile='_get_snippets; for ((n=0;n<${#LOAD_SNIPPETS[*]};n++)); do if ! _snippet search "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"; then source "${LOAD_SNIPPETS[$n]}" load && _snippet push "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"; fi; done'
-
 # _parse_profile
 # To be used with mapfile
 # Every line in the file is parsed and checked for a corresponding snippet to be loaded
@@ -58,7 +54,10 @@ _parse_profile() {
     if [[ "$VALUE" =~ ^[[:blank:]]*([^# ]+)([[:blank:]]|$) ]]; then
         {
             SNIPPET="${BASH_REMATCH[1]}"
-            [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" ] && LOAD_SNIPPETS+=("$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh")
+            if [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" ] && ! _snippet search "$SNIPPET"; then
+                # shellcheck source=/dev/null
+                source "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" load && _snippet push "$SNIPPET"
+            fi
         }
     fi
     return 0
@@ -244,4 +243,6 @@ if [ -z ${SWITCH_PROFILE_NEXT+is_set} ]; then {
     }
 fi
 
-if [ -n "${SWITCH_PROFILE_CURRENT+is_set}" ]; then _load_bash_profile; fi
+if [ -n "${SWITCH_PROFILE_CURRENT+is_set}" ]; then
+    mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SWITCH_PROFILE_CURRENT}.profile"
+fi
