@@ -169,7 +169,7 @@ switch_profile() {
 
     KEEP_ENV=0
     TEMP_PROFILE=0
-    while getopts "tkdhl" Option; do
+    while getopts ":tkdhl" Option; do
         case $Option in
         k)
             KEEP_ENV=1
