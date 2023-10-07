@@ -42,12 +42,10 @@ export SWITCH_PROFILE_SNIPPETS=""
 
 # Setup aliases to manage profiles
 alias _save_bash_profile='eval echo "export SWITCH_PROFILE_CURRENT=$SELECTED_PROFILE" > "$HOME/$SWITCH_PROFILE_SAVED"'
-alias _reset_bash_profile='eval echo "unset SWITCH_PROFILE_CURRENT" > "$HOME/$SWITCH_PROFILE_SAVED"'
 
 alias _get_snippets='eval unset LOAD_SNIPPETS; declare -a LOAD_SNIPPETS; mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SWITCH_PROFILE_CURRENT}.profile"'
 # shellcheck disable=SC2154
 alias _load_bash_profile='_get_snippets; for ((n=0;n<${#LOAD_SNIPPETS[*]};n++)); do if ! _snippet search "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"; then source "${LOAD_SNIPPETS[$n]}" load && _snippet push "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"; fi; done'
-alias _unload_bash_profile='for ((n=-1;n>=-${#LOAD_SNIPPETS[*]};n--)); do if _snippet search "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"; then source "${LOAD_SNIPPETS[$n]}" unload && _snippet pop "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"; fi; done'
 
 # _parse_profile
 # To be used with mapfile
@@ -165,10 +163,11 @@ EOF
 }
 
 switch_profile() {
-    local OPTIND OPTARG SELECTED_PROFILE KEEP_ENV TEMP_PROFILE
+    local OPTIND OPTARG SELECTED_PROFILE KEEP_ENV TEMP_PROFILE RESET_PROFILE
 
     KEEP_ENV=0
     TEMP_PROFILE=0
+    RESET_PROFILE=0
     while getopts ":tkdhl" Option; do
         case $Option in
         k)
@@ -189,9 +188,7 @@ switch_profile() {
             return 0
             ;;
         d)
-            _unload_bash_profile
-            _reset_bash_profile
-            exec bash
+            RESET_PROFILE=1
             ;;
         *)
             _switch_profile_help
@@ -201,9 +198,22 @@ switch_profile() {
     done
     shift $((OPTIND - 1))
 
+    if ! [ $KEEP_ENV -eq 1 ]; then
+        #[ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" ]
+        for ((n = -1; n >= -${#LOAD_SNIPPETS[*]}; n--)); do
+            if _snippet search "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"; then
+                # shellcheck source=/dev/null
+                source "${LOAD_SNIPPETS[$n]}" unload && _snippet pop "$(basename "${LOAD_SNIPPETS[$n]}" .sh)"
+            fi
+        done
+    fi
+    if [ $RESET_PROFILE -eq 1 ]; then
+        echo "unset SWITCH_PROFILE_CURRENT" >"$HOME/$SWITCH_PROFILE_SAVED"
+        exec bash
+    fi
+
     SELECTED_PROFILE="$1"
     if [ -f "${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SELECTED_PROFILE}.profile" ]; then {
-        [ $KEEP_ENV -eq 0 ] && _unload_bash_profile
         if [ $TEMP_PROFILE -eq 0 ]; then _save_bash_profile; else export SWITCH_PROFILE_NEXT="$SELECTED_PROFILE"; fi
         exec bash
     }; else
