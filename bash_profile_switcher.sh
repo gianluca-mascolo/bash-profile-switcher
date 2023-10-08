@@ -43,7 +43,7 @@ export SWITCH_PROFILE_SNIPPETS=""
 # _parse_profile
 # To be used with mapfile
 # Every line in the file is parsed and checked for a corresponding snippet to be loaded
-# It will store the valid snippets in global array LOAD_SNIPPETS
+
 _parse_profile() {
     local VALUE
     local SNIPPET
