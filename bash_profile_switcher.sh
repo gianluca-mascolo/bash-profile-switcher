@@ -40,11 +40,11 @@ export SWITCH_PROFILE_SAVED=".bash_saved_profile"
 # snipname1:snipname2:snippetname3
 export SWITCH_PROFILE_SNIPPETS=""
 
-# _parse_profile
+# _switch_profile_parse
 # To be used with mapfile
 # Every line in the file is parsed and checked for a corresponding snippet to be loaded
 
-_parse_profile() {
+_switch_profile_parse() {
     local VALUE
     local SNIPPET
     VALUE="$2"
@@ -245,5 +245,5 @@ if [ -z ${SWITCH_PROFILE_NEXT+is_set} ]; then {
 fi
 
 if [ -n "${SWITCH_PROFILE_CURRENT+is_set}" ]; then
-    mapfile -c 1 -C _parse_profile -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SWITCH_PROFILE_CURRENT}.profile"
+    mapfile -c 1 -C _switch_profile_parse -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SWITCH_PROFILE_CURRENT}.profile"
 fi
