@@ -120,6 +120,8 @@ OPTIONS
     Temporary profile. Load selected profile in current shell without starting it in new bash shells
   -l
     List available profiles
+  -v
+    Display switch_profile version
   -h Show help instructions (this help)
 
 PROFILE
@@ -166,7 +168,7 @@ switch_profile() {
     KEEP_ENV=0
     TEMP_PROFILE=0
     RESET_PROFILE=0
-    while getopts ":tkdhl" Option; do
+    while getopts ":tkdhlv" Option; do
         case $Option in
         k)
             KEEP_ENV=1
@@ -183,6 +185,10 @@ switch_profile() {
             ;;
         h)
             _switch_profile_help
+            return 0
+            ;;
+        v)
+            echo "${SWITCH_PROFILE_VERSION:-unknown}"
             return 0
             ;;
         d)

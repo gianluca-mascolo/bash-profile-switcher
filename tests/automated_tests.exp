@@ -37,6 +37,7 @@ source ./tests/scenarios/07-keep-profile.exp
 source ./tests/scenarios/08-unexistent-profile.exp
 source ./tests/scenarios/09-reload-list.exp
 source ./tests/scenarios/10-check-snippet.exp
+source ./tests/scenarios/11-check-version.exp
 
 sleep 1
 send "exit\n"
