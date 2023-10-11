@@ -1,0 +1,10 @@
+set scenario_results($scenario_index) "FAIL - Check version"
+
+send "echo \${SWITCH_PROFILE_VERSION}\n"
+expect {
+    timeout abort
+    "testver"
+}
+
+set scenario_results($scenario_index) "PASS - Check version"
+set scenario_index [ expr $scenario_index + 1]

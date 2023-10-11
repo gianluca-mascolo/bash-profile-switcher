@@ -40,6 +40,8 @@ export SWITCH_PROFILE_SAVED=".bash_saved_profile"
 # snipname1:snipname2:snippetname3
 export SWITCH_PROFILE_SNIPPETS=""
 
+# shellcheck source=/dev/null
+[[ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/.version" ]] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/.version"
 # _switch_profile_parse
 # To be used with mapfile
 # Every line in the file is parsed and checked for a corresponding snippet to be loaded
@@ -118,6 +120,8 @@ OPTIONS
     Temporary profile. Load selected profile in current shell without starting it in new bash shells
   -l
     List available profiles
+  -v
+    Display switch_profile version
   -h Show help instructions (this help)
 
 PROFILE
@@ -164,7 +168,7 @@ switch_profile() {
     KEEP_ENV=0
     TEMP_PROFILE=0
     RESET_PROFILE=0
-    while getopts ":tkdhl" Option; do
+    while getopts ":tkdhlv" Option; do
         case $Option in
         k)
             KEEP_ENV=1
@@ -181,6 +185,10 @@ switch_profile() {
             ;;
         h)
             _switch_profile_help
+            return 0
+            ;;
+        v)
+            echo "${SWITCH_PROFILE_VERSION:-unknown}"
             return 0
             ;;
         d)
