@@ -43,7 +43,9 @@ clean:
 
 .PHONY: install
 install:
+	[ -f .version ] || echo 'export SWITCH_PROFILE_VERSION=$(VERSION)' > .version
 	install -m 0644 -C bash_profile_switcher.sh $(INSTALL_PATH)/.bash_profile_switcher
+	install -m 0644 -C .version $(PROFILE_DIRECTORY)/.version
 ifneq ("$(BASHRC_INSTALL_STATUS)","0")
 	$(file >> $(BASHRC_PATH),$())
 	$(file >> $(BASHRC_PATH),$(BASHRC_INSTALL_LINE))
@@ -57,4 +59,5 @@ install-snippets:
 
 .PHONY: release
 release: $(PACKAGE_FILES)
+	echo 'export SWITCH_PROFILE_VERSION=$(VERSION)' > .version
 	tar --transform='s,,$(PACKAGE_NAME)_$(VERSION)/,' -czf $(PACKAGE_NAME)_$(VERSION).tar.gz $(PACKAGE_FILES)

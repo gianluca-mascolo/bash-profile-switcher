@@ -40,6 +40,8 @@ export SWITCH_PROFILE_SAVED=".bash_saved_profile"
 # snipname1:snipname2:snippetname3
 export SWITCH_PROFILE_SNIPPETS=""
 
+# shellcheck source=/dev/null
+[[ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/.version" ]] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/.version"
 # _switch_profile_parse
 # To be used with mapfile
 # Every line in the file is parsed and checked for a corresponding snippet to be loaded
