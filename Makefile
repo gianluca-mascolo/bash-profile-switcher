@@ -6,7 +6,7 @@ SNIPPETS := $(wildcard snippets/*.sh)
 PROFILE_DIRECTORY := $(HOME)/.bash_profile.d
 SNIPPETS_DIRECTORY := $(PROFILE_DIRECTORY)/snippets
 PACKAGE_NAME := bash-profile-switcher
-PACKAGE_FILES := README.md Makefile bash_profile_switcher.sh snippets
+PACKAGE_FILES := README.md Makefile bash_profile_switcher.sh snippets .version
 REF_TYPE := $(GITHUB_REF_TYPE)
 VERSION := $(shell git log -n1 --pretty=format:%h)
 ifeq ("$(REF_TYPE)","branch")
@@ -40,6 +40,7 @@ format:
 clean:
 	docker-compose down
 	rm -f $(PACKAGE_NAME)_*.tar.gz
+	rm -f .version
 
 .PHONY: install
 install:
@@ -58,7 +59,9 @@ install-snippets:
 		install -m 0755 -C $$snip $(SNIPPETS_DIRECTORY); \
 	done
 
+.version:
+	echo 'export SWITCH_PROFILE_VERSION=$(VERSION)' > .version
+
 .PHONY: release
 release: $(PACKAGE_FILES)
-	echo 'export SWITCH_PROFILE_VERSION=$(VERSION)' > .version
 	tar --transform='s,,$(PACKAGE_NAME)_$(VERSION)/,' -czf $(PACKAGE_NAME)_$(VERSION).tar.gz $(PACKAGE_FILES)
