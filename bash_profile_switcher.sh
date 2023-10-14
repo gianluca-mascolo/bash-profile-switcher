@@ -11,7 +11,7 @@
 #
 # Source repository: https://github.com/gianluca-mascolo/bash-profile-switcher
 #
-# Copyright (C) 2022 Gianluca Mascolo
+# Copyright (C) 2022-2023 Gianluca Mascolo
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,8 +36,7 @@ export SWITCH_PROFILE_DIRECTORY=".bash_profile.d"
 # Setup save profile filename
 export SWITCH_PROFILE_SAVED=".bash_saved_profile"
 
-# List of loaded snippets separated by colon like
-# snipname1:snipname2:snippetname3
+# List of loaded snippets separated by colon
 export SWITCH_PROFILE_SNIPPETS=""
 
 # shellcheck source=/dev/null
