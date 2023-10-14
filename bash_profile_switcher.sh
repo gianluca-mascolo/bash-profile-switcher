@@ -53,21 +53,21 @@ _switch_profile_parse() {
     if [[ "$VALUE" =~ ^[[:blank:]]*([^# ]+)([[:blank:]]|$) ]]; then
         {
             SNIPPET="${BASH_REMATCH[1]}"
-            if [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" ] && ! _snippet search "$SNIPPET"; then
+            if [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" ] && ! _switch_profile_snippet search "$SNIPPET"; then
                 # shellcheck source=/dev/null
-                source "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" load && _snippet push "$SNIPPET"
+                source "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" load && _switch_profile_snippet push "$SNIPPET"
             fi
         }
     fi
     return 0
 }
 
-# _snippet [push|pop|search] <snippet name>
+# _switch_profile_snippet [push|pop|search] <snippet name>
 # Manage the status of snippets storing it in SWITCH_PROFILE_SNIPPETS if it has loaded or unloaded.
 # - push the snippet name into SWITCH_PROFILE_SNIPPETS only if the value is not already present
 # - pop the snippet name from SWITCH_PROFILE_SNIPPETS
 # - search if a snippet name is present in SWITCH_PROFILE_SNIPPETS
-_snippet() {
+_switch_profile_snippet() {
     local -r snippet_cmd="${1:-}"
     local -r snippet_name="${2:-}"
     local -r REGEX="(^|.*:)(${snippet_name})(:.*|$)"
@@ -207,7 +207,7 @@ switch_profile() {
         for ((n = -1; n >= -${#SNIPPET_ARRAY[*]}; n--)); do
             if [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/${SNIPPET_ARRAY[$n]}.sh" ]; then
                 # shellcheck source=/dev/null
-                source "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/${SNIPPET_ARRAY[$n]}.sh" unload && _snippet pop "${SNIPPET_ARRAY[$n]}"
+                source "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/${SNIPPET_ARRAY[$n]}.sh" unload && _switch_profile_snippet pop "${SNIPPET_ARRAY[$n]}"
             fi
         done
     fi
