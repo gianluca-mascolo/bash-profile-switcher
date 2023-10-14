@@ -8,7 +8,7 @@ SNIPPETS_DIRECTORY := $(PROFILE_DIRECTORY)/snippets
 PACKAGE_NAME := bash-profile-switcher
 PACKAGE_FILES := README.md Makefile bash_profile_switcher.sh snippets .version
 REF_TYPE := $(GITHUB_REF_TYPE)
-VERSION := $(shell git log -n1 --pretty=format:%h 2> /dev/null || echo dev)
+VERSION := $(shell ./get-version.sh)
 ifeq ("$(REF_TYPE)","branch")
         VERSION := $(GITHUB_SHA)
 endif
