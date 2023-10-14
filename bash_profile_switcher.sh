@@ -42,32 +42,32 @@ export SWITCH_PROFILE_SNIPPETS=""
 
 # shellcheck source=/dev/null
 [[ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/.version" ]] && source "$HOME/$SWITCH_PROFILE_DIRECTORY/.version"
-# _switch_profile_parse
+# __switch_profile_parse
 # To be used with mapfile
 # Every line in the file is parsed and checked for a corresponding snippet to be loaded
 
-_switch_profile_parse() {
+__switch_profile_parse() {
     local VALUE
     local SNIPPET
     VALUE="$2"
     if [[ "$VALUE" =~ ^[[:blank:]]*([^# ]+)([[:blank:]]|$) ]]; then
         {
             SNIPPET="${BASH_REMATCH[1]}"
-            if [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" ] && ! _switch_profile_snippet search "$SNIPPET"; then
+            if [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" ] && ! __switch_profile_snippet search "$SNIPPET"; then
                 # shellcheck source=/dev/null
-                source "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" load && _switch_profile_snippet push "$SNIPPET"
+                source "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/$SNIPPET.sh" load && __switch_profile_snippet push "$SNIPPET"
             fi
         }
     fi
     return 0
 }
 
-# _switch_profile_snippet [push|pop|search] <snippet name>
+# __switch_profile_snippet [push|pop|search] <snippet name>
 # Manage the status of snippets storing it in SWITCH_PROFILE_SNIPPETS if it has loaded or unloaded.
 # - push the snippet name into SWITCH_PROFILE_SNIPPETS only if the value is not already present
 # - pop the snippet name from SWITCH_PROFILE_SNIPPETS
 # - search if a snippet name is present in SWITCH_PROFILE_SNIPPETS
-_switch_profile_snippet() {
+__switch_profile_snippet() {
     local -r snippet_cmd="${1:-}"
     local -r snippet_name="${2:-}"
     local -r REGEX="(^|.*:)(${snippet_name})(:.*|$)"
@@ -93,7 +93,7 @@ _switch_profile_snippet() {
 }
 
 # Create list of profiles from .profile files
-_switch_profile_list() {
+__switch_profile_list() {
     local PROFILE_LIST
     # Note: If there are no matching files, echo *.profile output literally "*.profile"
     PROFILE_LIST="$(echo "$HOME/$SWITCH_PROFILE_DIRECTORY/"*.profile)"
@@ -103,11 +103,11 @@ _switch_profile_list() {
     echo "$PROFILE_LIST"
 }
 
-SWITCH_PROFILE_LIST=$(_switch_profile_list)
+SWITCH_PROFILE_LIST=$(__switch_profile_list)
 export SWITCH_PROFILE_LIST
 
 ### FUNCTION DECLARATION ###
-_switch_profile_help() {
+__switch_profile_help() {
     cat <<EOF
 switch_profile [options] profile
 
@@ -177,14 +177,14 @@ switch_profile() {
             TEMP_PROFILE=1
             ;;
         l)
-            SWITCH_PROFILE_LIST=$(_switch_profile_list)
+            SWITCH_PROFILE_LIST=$(__switch_profile_list)
             export SWITCH_PROFILE_LIST
             [ -n "$SWITCH_PROFILE_LIST" ] && complete -o nospace -W "$SWITCH_PROFILE_LIST" switch_profile
             echo -e "${SWITCH_PROFILE_LIST// /\\n}"
             return 0
             ;;
         h)
-            _switch_profile_help
+            __switch_profile_help
             return 0
             ;;
         v)
@@ -195,7 +195,7 @@ switch_profile() {
             RESET_PROFILE=1
             ;;
         *)
-            _switch_profile_help
+            __switch_profile_help
             return 1
             ;;
         esac
@@ -207,7 +207,7 @@ switch_profile() {
         for ((n = -1; n >= -${#SNIPPET_ARRAY[*]}; n--)); do
             if [ -f "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/${SNIPPET_ARRAY[$n]}.sh" ]; then
                 # shellcheck source=/dev/null
-                source "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/${SNIPPET_ARRAY[$n]}.sh" unload && _switch_profile_snippet pop "${SNIPPET_ARRAY[$n]}"
+                source "$HOME/$SWITCH_PROFILE_DIRECTORY/snippets/${SNIPPET_ARRAY[$n]}.sh" unload && __switch_profile_snippet pop "${SNIPPET_ARRAY[$n]}"
             fi
         done
     fi
@@ -226,7 +226,7 @@ switch_profile() {
         exec bash
     }; else
         {
-            _switch_profile_help
+            __switch_profile_help
             echo "Selected profile does not exist."
             switch_profile -l
             echo ""
@@ -253,5 +253,5 @@ if [ -z ${SWITCH_PROFILE_NEXT+is_set} ]; then {
 fi
 
 if [ -n "${SWITCH_PROFILE_CURRENT+is_set}" ]; then
-    mapfile -c 1 -C _switch_profile_parse -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SWITCH_PROFILE_CURRENT}.profile"
+    mapfile -c 1 -C __switch_profile_parse -t <"${HOME}/${SWITCH_PROFILE_DIRECTORY}/${SWITCH_PROFILE_CURRENT}.profile"
 fi
