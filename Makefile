@@ -9,12 +9,6 @@ PACKAGE_NAME := bash-profile-switcher
 PACKAGE_FILES := README.md Makefile bash_profile_switcher.sh snippets .version
 REF_TYPE := $(GITHUB_REF_TYPE)
 VERSION := $(shell ./get-version.sh)
-ifeq ("$(REF_TYPE)","branch")
-        VERSION := $(GITHUB_SHA)
-endif
-ifeq ("$(REF_TYPE)","tag")
-        VERSION := $(GITHUB_REF_NAME)
-endif
 
 ifeq  ("$(BASHRC_CHECK_INSTALL)","$(BASHRC_INSTALL_LINE)")
 	BASHRC_INSTALL_STATUS := 0
@@ -59,6 +53,7 @@ install-snippets:
 		install -m 0755 -C $$snip $(SNIPPETS_DIRECTORY); \
 	done
 
+.PHONY: .version
 .version:
 	echo 'export SWITCH_PROFILE_VERSION=$(VERSION)' > .version
 
