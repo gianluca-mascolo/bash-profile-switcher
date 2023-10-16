@@ -96,12 +96,13 @@ __switch_profile_snippet() {
 
 # Create list of profiles from .profile files
 __switch_profile_list() {
+    #shellcheck disable=SC2064
+    trap "$(shopt -p nullglob)" RETURN
+    shopt -s nullglob
     local PROFILE_LIST
-    # Note: If there are no matching files, echo *.profile output literally "*.profile"
     PROFILE_LIST="$(echo "$HOME/$SWITCH_PROFILE_DIRECTORY/"*.profile)"
     PROFILE_LIST="${PROFILE_LIST//$HOME\/$SWITCH_PROFILE_DIRECTORY\//}"
     PROFILE_LIST="${PROFILE_LIST//.profile/}"
-    [[ "$PROFILE_LIST" = '*' ]] && PROFILE_LIST=""
     echo "$PROFILE_LIST"
 }
 
