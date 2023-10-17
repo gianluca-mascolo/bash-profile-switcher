@@ -100,10 +100,14 @@ __switch_profile_list() {
     trap "$(shopt -p nullglob)" RETURN
     shopt -s nullglob
     local PROFILE_LIST
-    PROFILE_LIST="$(echo "$HOME/$SWITCH_PROFILE_DIRECTORY/"*.profile)"
-    PROFILE_LIST="${PROFILE_LIST//$HOME\/$SWITCH_PROFILE_DIRECTORY\//}"
-    PROFILE_LIST="${PROFILE_LIST//.profile/}"
-    echo "$PROFILE_LIST"
+    local PROFILE_NAME
+    local PFILE
+    local -r PDIR="$HOME/$SWITCH_PROFILE_DIRECTORY/"
+    for PFILE in "$PDIR"*.profile; do
+        PROFILE_NAME="${PFILE#"$PDIR"}"
+        PROFILE_LIST="$PROFILE_LIST ${PROFILE_NAME%.profile}"
+    done
+    echo "${PROFILE_LIST/ /}" # trim trailing whitespaces
 }
 
 SWITCH_PROFILE_LIST=$(__switch_profile_list)
