@@ -99,15 +99,13 @@ __switch_profile_list() {
     #shellcheck disable=SC2064
     trap "$(shopt -p nullglob)" RETURN
     shopt -s nullglob
-    local PROFILE_LIST
-    local PROFILE_NAME
+    local -a PROFILE_LIST
     local PFILE
     local -r PDIR="$HOME/$SWITCH_PROFILE_DIRECTORY/"
     for PFILE in "$PDIR"*.profile; do
-        PROFILE_NAME="${PFILE#"$PDIR"}"
-        PROFILE_LIST="$PROFILE_LIST ${PROFILE_NAME%.profile}"
+        PROFILE_LIST+=("${PFILE#"$PDIR"}")
     done
-    echo "${PROFILE_LIST/ /}" # trim trailing whitespaces
+    echo "${PROFILE_LIST[*]/%.profile/}"
 }
 
 SWITCH_PROFILE_LIST=$(__switch_profile_list)
