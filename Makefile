@@ -32,7 +32,7 @@ format:
 
 .PHONY: clean
 clean:
-	docker-compose down
+	docker compose down
 	rm -f $(PACKAGE_NAME)_*.tar.gz
 	rm -f .version
 

@@ -23,7 +23,7 @@ proc abort {} {
     exit 1
 }
 
-spawn docker-compose run --rm shell
+spawn docker compose run --rm shell
 sleep 2
 expect "#"
 
