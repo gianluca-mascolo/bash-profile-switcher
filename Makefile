@@ -6,7 +6,7 @@ SNIPPETS := $(wildcard snippets/*.sh)
 PROFILE_DIRECTORY := $(HOME)/.bash_profile.d
 SNIPPETS_DIRECTORY := $(PROFILE_DIRECTORY)/snippets
 PACKAGE_NAME := bash-profile-switcher
-PACKAGE_FILES := README.md Makefile bash_profile_switcher.sh snippets .version
+PACKAGE_FILES := README.md Makefile bash_profile_switcher.sh snippets .version get-version.sh
 REF_TYPE := $(GITHUB_REF_TYPE)
 VERSION := $(shell ./get-version.sh)
 
