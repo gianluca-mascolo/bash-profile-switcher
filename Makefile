@@ -38,6 +38,7 @@ clean:
 
 .PHONY: install
 install:
+	install -d -m 0755 $(PROFILE_DIRECTORY)
 ifneq ("$(wildcard .version)","")
 	install -m 0644 -C .version $(PROFILE_DIRECTORY)/.version
 endif
@@ -48,7 +49,8 @@ ifneq ("$(BASHRC_INSTALL_STATUS)","0")
 endif
 
 .PHONY: install-snippets
-install-snippets:
+install-snippets: install
+	install -d -m 0755 $(SNIPPETS_DIRECTORY)
 	for snip in $(SNIPPETS); do \
 		install -m 0755 -C $$snip $(SNIPPETS_DIRECTORY); \
 	done
