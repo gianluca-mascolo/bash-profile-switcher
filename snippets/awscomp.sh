@@ -12,7 +12,7 @@
 
 case "$1" in
 load)
-    alias awp='eval export AWS_PROFILE=$(grep --color=none -oP "(?<=\[profile )[^]]+(?=])" "${AWS_CONFIG_FILE:-$HOME/.aws/config}" | sort | fzf --height=6)'
+    alias awp='p=$(grep -oP "(?<=\[profile )[^]]+(?=])" "${AWS_CONFIG_FILE:-$HOME/.aws/config}" | sort | fzf --height=6) && export AWS_PROFILE="$p"'
     hash aws_completer && complete -C "$(hash -t aws_completer)" aws
     ;;
 unload)
